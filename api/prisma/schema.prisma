@@ -47,14 +47,14 @@ model Users {
 }
 
 model Students {
-  id              Int           @id @default(autoincrement())
-  name            String        @db.VarChar(255)
-  email           String        @unique @db.VarChar(255)
-  student_id      String        @db.VarChar(20)
-  document_number String        @unique @db.VarChar(14)
-  created_at      DateTime      @default(now())
-  updated_at      DateTime      @updatedAt
-  enrollments     Enrollments[]
+  id                  Int           @id @default(autoincrement())
+  name                String        @db.VarChar(255)
+  email               String        @unique @db.VarChar(255)
+  registration_number String        @unique @db.VarChar(20)
+  document_number     String        @unique @db.VarChar(14)
+  created_at          DateTime      @default(now())
+  updated_at          DateTime      @updatedAt
+  enrollments         Enrollments[]
 
   @@map("students")
 }
