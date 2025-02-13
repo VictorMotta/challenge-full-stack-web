@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RolesNames {
+  ADMIN
+  TEACHER
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  CANCELED
+  SUSPENDED
+  COMPLETED
+}
+
+enum SubjectEnrollmentStatus {
+  ENROLLED
+  DROPPED
+  FAILED
+  PASSED
+}
+
+enum EvaluationType {
+  EXAM
+  ASSIGNMENT
+  PARTICIPATION
+  FINAL
+}
+
+model Users {
+  id         Int        @id @default(autoincrement())
+  name       String     @db.VarChar(255)
+  email      String     @unique @db.VarChar(255)
+  role_id    RolesNames
+  password   String     @db.VarChar(255)
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  logs       Logs[]
+
+  @@map("users")
+}
+
+model Students {
+  id              Int           @id @default(autoincrement())
+  name            String        @db.VarChar(255)
+  email           String        @unique @db.VarChar(255)
+  student_id      String        @db.VarChar(20)
+  document_number String        @unique @db.VarChar(14)
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+  enrollments     Enrollments[]
+
+  @@map("students")
+}
+
+model Courses {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique @db.VarChar(255)
+  description String?
+  workload    Int
+  subjects    Subjects[]
+  Enrollments Enrollments[]
+
+  @@map("courses")
+}
+
+model Enrollments {
+  id              Int              @id @default(autoincrement())
+  student_id      Int
+  course_id       Int
+  enrollment_date DateTime         @default(now())
+  status          EnrollmentStatus
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @updatedAt
+
+  student             Students              @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  course              Courses               @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  enrollmentsSubjects EnrollmentsSubjects[]
+
+  @@map("enrollments")
+}
+
+model Logs {
+  id          Int      @id @default(autoincrement())
+  user_id     Int
+  user        Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  description String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("logs")
+}
+
+model Semester {
+  id                  Int                   @id @default(autoincrement())
+  name                String                @unique @db.VarChar(20)
+  start_date          DateTime
+  end_date            DateTime
+  created_at          DateTime              @default(now())
+  subjects            Subjects[]
+  enrollmentsSubjects EnrollmentsSubjects[]
+
+  @@map("semester")
+}
+
+model Subjects {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(255)
+  course_id    Int
+  semester_id  Int
+  credit_hours Int
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  course              Courses               @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  semester            Semester              @relation(fields: [semester_id], references: [id], onDelete: Cascade)
+  enrollmentsSubjects EnrollmentsSubjects[]
+
+  @@map("subjects")
+}
+
+model EnrollmentsSubjects {
+  id            Int                     @id @default(autoincrement())
+  enrollment_id Int
+  subject_id    Int
+  semester_id   Int
+  status        SubjectEnrollmentStatus
+  created_at    DateTime                @default(now())
+  updated_at    DateTime                @updatedAt
+
+  enrollment Enrollments @relation(fields: [enrollment_id], references: [id], onDelete: Cascade)
+  subject    Subjects    @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  semester   Semester    @relation(fields: [semester_id], references: [id], onDelete: Cascade)
+  grades     Grades[]
+
+  @@map("enrollments_subjects")
+}
+
+model Grades {
+  id                    Int            @id @default(autoincrement())
+  enrollment_subject_id Int
+  grade                 Float
+  evaluation_type       EvaluationType
+  date_recorded         DateTime       @default(now())
+
+  enrollment_subject EnrollmentsSubjects @relation(fields: [enrollment_subject_id], references: [id], onDelete: Cascade)
+
+  @@map("grades")
+}
