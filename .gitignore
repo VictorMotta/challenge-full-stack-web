@@ -9,6 +9,17 @@ lerna-debug.log*
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+app/.vite/
+
+# Arquivos gerados automaticamente por plugins
+app/.eslintrc-auto-import.json
+app/auto-imports.d.ts
+app/components.d.ts
+app/.env*
+app/.env
+api/.env*
+api/.env
+api/.vscode
 # Runtime data
 pids
 *.pid
