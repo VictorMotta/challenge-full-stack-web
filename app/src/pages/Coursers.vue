@@ -1,5 +1,5 @@
 <template>
-  <h1>Alunos</h1>
+  <h1>Cursos</h1>
 </template>
 
 <script lang="ts" setup>
