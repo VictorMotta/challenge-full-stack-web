@@ -31,7 +31,7 @@ async function main() {
             return userData;
         });
     }
-    const registration_number = "RA321321333333333333";
+    const registration_number = "RN321321333333333333";
     if (!student) {
         student = await prisma.students.create({
             data: {
