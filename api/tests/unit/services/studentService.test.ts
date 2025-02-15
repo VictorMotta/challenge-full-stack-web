@@ -70,28 +70,22 @@ describe("Student Service", () => {
                 email: "john@example.com"
             };
 
-            // Simula que já existe um estudante no banco de dados
             (studentRepository.getStudentByDocumentNumberOrEmail as jest.Mock).mockResolvedValue(
                 mockStudent
             );
 
-            // Vamos simular o erro lançado diretamente na chamada do serviço
             const error = conflictError("Student already exists");
             (studentRepository.createStudent as jest.Mock).mockRejectedValueOnce(error);
 
             try {
-                // Espera que o erro seja lançado
                 await createStudentService(mockStudent);
             } catch (error) {
-                // Adiciona a propriedade 'details' ao erro
                 (error as any).details = "Student already exists";
 
-                // Verifica se o erro lançado tem as propriedades esperadas
                 expect(error).toHaveProperty("name", "ConflictError");
                 expect(error).toHaveProperty("details", "Student already exists");
             }
 
-            // Verifica se o método getStudentByDocumentNumberOrEmail foi chamado corretamente
             expect(studentRepository.getStudentByDocumentNumberOrEmail).toHaveBeenCalledWith(
                 "123",
                 "john@example.com"
