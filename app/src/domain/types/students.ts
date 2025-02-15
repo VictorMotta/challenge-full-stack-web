@@ -1,6 +1,6 @@
 import type { GetAllStudentsUseCase } from "../useCases/students/getAllStudentsUseCase";
 
-export interface DataProps {
+export interface StudentStoreProps {
   search: string;
   students: GetAllStudentsUseCase.Students[];
   paginatedItems: GetAllStudentsUseCase.Students[];
@@ -21,6 +21,6 @@ export interface MethodsProps {
 }
 
 export interface IndexComponent
-  extends DataProps,
+  extends StudentStoreProps,
     ComputedProps,
     MethodsProps {}
