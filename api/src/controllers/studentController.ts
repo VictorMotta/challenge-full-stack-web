@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { getAllStudentsService } from "services";
+import { createStudentService, getAllStudentsService } from "services";
+import httpStatus from "http-status";
 
 export async function getAllStudentsController(_req: Request, res: Response, next: NextFunction) {
     try {
@@ -10,6 +11,19 @@ export async function getAllStudentsController(_req: Request, res: Response, nex
         };
 
         res.json(payload);
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+}
+
+export async function createStudentController(req: Request, res: Response, next: NextFunction) {
+    try {
+        const body = req.body;
+
+        await createStudentService(body);
+
+        res.sendStatus(httpStatus.CREATED);
     } catch (error) {
         console.error(error);
         next(error);
