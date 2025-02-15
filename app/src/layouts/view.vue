@@ -8,7 +8,7 @@
         <v-list-subheader class="box-title">Modulo Acadêmico</v-list-subheader>
         <router-link v-for="(item, i) in items" :key="i" :to="item.to">
           <v-list-item :value="item" class="box-menu">
-            <v-list-item-title>{{ item.text }}</v-list-item-title>
+            <v-list-item-title :textContent="item.text" />
           </v-list-item>
         </router-link>
       </v-list>
@@ -24,15 +24,21 @@
   </v-app>
 </template>
 
-<script lang="ts" setup>
-import { ref } from "vue";
+<script lang="ts">
+import { defineComponent } from "vue";
 
-const drawer = ref(null);
-
-const items = [
-  { to: "/", text: "Alunos", icon: "mdi-clock" },
-  { to: "/coursers", text: "Cursos", icon: "mdi-account" }
-];
+export default defineComponent({
+  name: "View",
+  data() {
+    return {
+      drawer: true, // Deixe como false para evitar problemas no v-model
+      items: [
+        { to: "/", text: "Alunos", icon: "mdi-clock" },
+        { to: "/coursers", text: "Cursos", icon: "mdi-account" }
+      ]
+    };
+  }
+});
 </script>
 
 <style scoped>
