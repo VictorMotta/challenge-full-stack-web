@@ -1,7 +1,6 @@
 <template>
   <TitlePage title="Consulta de Alunos" />
 
-  <!-- Campo de pesquisa -->
   <v-text-field
     v-model="search"
     label="Buscar aluno..."
@@ -28,7 +27,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import TitlePage from "../components/ui/titlePage.vue";
+import TitlePage from "../components/ui/TitlePage.vue";
+import { GetRecentBalanceService } from "../services/students/getAllStudentsService";
 
 export default defineComponent({
   name: "Index",
@@ -37,13 +37,12 @@ export default defineComponent({
   },
   data() {
     return {
-      search: "", // Campo de pesquisa
+      search: "",
       students: [],
-      items: [],
       paginatedItems: [],
-      loading: false, // Indica quando os dados estão carregando
-      page: 1, // Página atual
-      itemsPerPage: 5, // Número de itens por página
+      loading: false,
+      page: 1,
+      itemsPerPage: 5,
       headers: [
         { title: "Nome", value: "name" },
         { title: "E-mail", value: "email" },
@@ -53,13 +52,12 @@ export default defineComponent({
     };
   },
   computed: {
-    // Filtra alunos pelo nome, CPF ou RA
     filteredItems() {
-      if (!this.search) return this.items; // Retorna todos se não houver busca
+      if (!this.search) return this.students;
 
       const searchLower = this.search.toLowerCase();
 
-      return this.items.filter(
+      return this.students.filter(
         (student) =>
           student.name.toLowerCase().includes(searchLower) ||
           student.document_number.includes(searchLower) ||
@@ -68,7 +66,6 @@ export default defineComponent({
     }
   },
   watch: {
-    // Atualiza a paginação quando os itens filtrados mudam
     filteredItems() {
       this.updatePagination();
     }
@@ -80,18 +77,16 @@ export default defineComponent({
     async fetchStudents() {
       try {
         this.loading = true;
-        const response = await fetch("/mocks/getStudents.json");
-        if (!response.ok) throw new Error("Erro ao buscar alunos!");
 
-        const data = await response.json();
-        console.log("Dados recebidos:", data);
+        const response = await GetRecentBalanceService.instance.perform();
+        console.log("Dados recebidos:", response);
 
-        this.items = data.students.map((student) => ({
+        this.students = response.students.map((student: any) => ({
           ...student,
           key: student.id
         }));
 
-        this.updatePagination(); // Atualiza a exibição paginada
+        this.updatePagination();
       } catch (error) {
         console.error("Erro ao buscar alunos:", error);
       } finally {
