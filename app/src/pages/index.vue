@@ -29,36 +29,38 @@
 import { defineComponent } from "vue";
 import TitlePage from "../components/ui/TitlePage.vue";
 import { GetRecentBalanceService } from "../services/students/getAllStudentsService";
+import { GetAllStudentsUseCase } from "../domain/useCases/students/getAllStudentsUseCase";
+import { DataProps } from "../domain/types/students";
 
 export default defineComponent({
   name: "Index",
   components: {
     TitlePage
   },
-  data() {
+  data(): DataProps {
     return {
-      search: "",
-      students: [],
-      paginatedItems: [],
-      loading: false,
-      page: 1,
-      itemsPerPage: 5,
+      search: "" as string,
+      students: [] as GetAllStudentsUseCase.Students[],
+      paginatedItems: [] as GetAllStudentsUseCase.Students[],
+      loading: false as boolean,
+      page: 1 as number,
+      itemsPerPage: 5 as number,
       headers: [
         { title: "Nome", value: "name" },
         { title: "E-mail", value: "email" },
         { title: "RA", value: "registration_number" },
         { title: "CPF", value: "document_number" }
-      ]
+      ] as { title: string; value: keyof GetAllStudentsUseCase.Students }[]
     };
   },
   computed: {
-    filteredItems() {
+    filteredItems(): GetAllStudentsUseCase.Students[] {
       if (!this.search) return this.students;
 
       const searchLower = this.search.toLowerCase();
 
       return this.students.filter(
-        (student) =>
+        (student: GetAllStudentsUseCase.Students) =>
           student.name.toLowerCase().includes(searchLower) ||
           student.document_number.includes(searchLower) ||
           student.registration_number.includes(searchLower)
@@ -74,18 +76,13 @@ export default defineComponent({
     this.fetchStudents();
   },
   methods: {
-    async fetchStudents() {
+    async fetchStudents(): Promise<void> {
       try {
         this.loading = true;
 
         const response = await GetRecentBalanceService.instance.perform();
         console.log("Dados recebidos:", response);
-
-        this.students = response.students.map((student: any) => ({
-          ...student,
-          key: student.id
-        }));
-
+        this.students = response.students;
         this.updatePagination();
       } catch (error) {
         console.error("Erro ao buscar alunos:", error);
@@ -93,12 +90,12 @@ export default defineComponent({
         this.loading = false;
       }
     },
-    updatePagination() {
+    updatePagination(): void {
       const start = (this.page - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
       this.paginatedItems = this.filteredItems.slice(start, end);
     },
-    updatePage(newPage) {
+    updatePage(newPage: number): void {
       this.page = newPage;
       this.updatePagination();
     }
