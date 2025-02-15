@@ -1,11 +1,9 @@
 <template>
-  <v-main>
-    <router-view />
-  </v-main>
-
-  <AppFooter />
+  <v-app>
+    <View />
+  </v-app>
 </template>
 
 <script lang="ts" setup>
-  //
+import View from "./View.vue";
 </script>
