@@ -5,6 +5,7 @@ import { generateUniqueRegistrationNumber } from "utils";
 
 export async function getAllStudentsService(): Promise<Students[]> {
     const students = await studentRepository.getAllStudents();
+    if (!students) return [];
 
     return students;
 }
