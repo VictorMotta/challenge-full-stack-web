@@ -6,11 +6,7 @@ import {
 } from "controllers";
 import { Router } from "express";
 import { validateBody, validateParams, validateQuery } from "middlewares";
-import {
-    createStudentSchema,
-    deleteStudentSchema,
-    updateStudentSchema
-} from "schemas/studentSchema";
+import { createStudentSchema, deleteStudentSchema, updateStudentSchema } from "schemas";
 
 const studentRouter = Router();
 
