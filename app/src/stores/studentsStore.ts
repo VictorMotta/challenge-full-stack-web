@@ -23,6 +23,9 @@ export const useStudentsStore = defineStore("student", {
       ] as { title: string; value: keyof GetAllStudentsUseCase.Students }[]
     }) as StudentStoreProps,
   actions: {
+    getStudentById(id: number) {
+      return this.students.find((student) => student.id === id) || null;
+    },
     async fetchStudents(isSearch: boolean = false): Promise<void> {
       try {
         this.loading = true;

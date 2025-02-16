@@ -1,5 +1,5 @@
 <template>
-  <TitlePage title="Cadastro de aluno" />
+  <TitlePage :title="isEditing ? 'Editar Aluno' : 'Cadastro de Aluno'" />
   <div class="conteiner-form">
     <v-form ref="form">
       <v-text-field
@@ -35,6 +35,7 @@
         density="compact"
         :rules="[rules.required, rules.cpf]"
         @input="applyCpfMask"
+        v-if="!isEditing"
       />
     </v-form>
   </div>
@@ -42,7 +43,9 @@
     <v-btn color="primary" variant="outlined" @click="navigateStudents">
       Cancel
     </v-btn>
-    <v-btn class="ml-5" @click="handleCreateStudent"> Salvar </v-btn>
+    <v-btn class="ml-5" @click="handleSaveStudent">{{
+      isEditing ? "Atualizar" : "Salvar"
+    }}</v-btn>
   </div>
 
   <v-snackbar
@@ -55,8 +58,8 @@
 </template>
 
 <script>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useNotificationStore } from "../stores/notificationStore";
 import { useStudentsStore } from "../stores/studentsStore";
 
@@ -67,12 +70,30 @@ export default {
     const studentsStore = useStudentsStore();
 
     const router = useRouter();
+    const route = useRoute();
     const form = ref(null);
+
+    const studentId = ref(route.query.id ? Number(route.query.id) : null);
+    const isEditing = ref(!!studentId.value);
 
     const studentData = ref({
       name: "",
       email: "",
       document_number: ""
+    });
+
+    onMounted(async () => {
+      await studentsStore.fetchStudents();
+
+      if (isEditing.value) {
+        const student = studentsStore.students.find(
+          (s) => s.id === studentId.value
+        );
+
+        if (student) {
+          studentData.value = { ...student };
+        }
+      }
     });
 
     const navigateStudents = () => {
@@ -98,17 +119,22 @@ export default {
       studentData.value.document_number = value;
     };
 
-    const handleCreateStudent = async () => {
+    const handleSaveStudent = async () => {
       const validationResult = await form.value?.validate();
       if (!validationResult?.valid) return;
 
-      const navigate = await studentsStore.createStudent(
-        studentData.value,
-        router
-      );
-      if (navigate) {
-        navigateStudents();
+      let navigate = false;
+
+      if (isEditing.value) {
+        navigate = await studentsStore.updateStudent(
+          studentId.value,
+          studentData.value
+        );
+      } else {
+        navigate = await studentsStore.createStudent(studentData.value);
       }
+
+      if (navigate) navigateStudents();
     };
 
     return {
@@ -117,8 +143,9 @@ export default {
       rules,
       applyCpfMask,
       navigateStudents,
-      handleCreateStudent,
-      notificationStore
+      handleSaveStudent,
+      notificationStore,
+      isEditing
     };
   }
 };
