@@ -4,6 +4,7 @@ import type { GetAllStudentsUseCase } from "@/domain/useCases/students/getAllStu
 import type { StudentStoreProps } from "@/domain/types/studentsTypes";
 import { CreateStudentService } from "@/services/students/createStudentService";
 import { useNotificationStore } from "./notificationStore";
+import { UpdateStudentService } from "@/services/students/updateStudentService";
 
 export const useStudentsStore = defineStore("student", {
   state: () =>
@@ -60,6 +61,39 @@ export const useStudentsStore = defineStore("student", {
         };
 
         await CreateStudentService.instance.perform(body);
+
+        notificationStore.showNotification(
+          "Aluno cadastrado com sucesso!",
+          "success"
+        );
+
+        return true;
+      } catch (error) {
+        console.error(error);
+        notificationStore.showNotification("Erro ao cadastrar aluno!", "error");
+        return false;
+      }
+    },
+    async updateStudent(
+      studentId: number,
+      studentData: {
+        name: string;
+        email: string;
+      }
+    ): Promise<boolean> {
+      const notificationStore = useNotificationStore();
+      try {
+        const body = {
+          select: {
+            student_id: studentId
+          },
+          update: {
+            name: studentData.name,
+            email: studentData.email
+          }
+        };
+
+        await UpdateStudentService.instance.perform(body);
 
         notificationStore.showNotification(
           "Aluno cadastrado com sucesso!",
