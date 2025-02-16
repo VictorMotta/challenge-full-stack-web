@@ -32,4 +32,4 @@ jobs:
       - name: Run tests for API
         run: |
           cd api
-          npm run prisma:migration:test && dotenv -e .env.test jest -- -i
+          npm run test:pr:init
