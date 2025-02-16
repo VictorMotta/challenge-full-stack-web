@@ -237,4 +237,36 @@ describe("studentRepository", () => {
             expect(prisma.students.update).toHaveBeenCalledTimes(1);
         });
     });
+
+    describe("disableStudent", () => {
+        it("should disable a student", async () => {
+            (prisma.students.update as jest.Mock).mockResolvedValue(undefined);
+
+            await studentRepository.disableStudent(1);
+
+            expect(prisma.students.update).toHaveBeenCalledTimes(1);
+            expect(prisma.students.update).toHaveBeenCalledWith({
+                where: { id: 1 },
+                data: { active: false }
+            });
+        });
+
+        it("should throw an internalDatabaseError on failure", async () => {
+            (prisma.students.update as jest.Mock).mockRejectedValue(internalDatabaseError());
+
+            try {
+                await studentRepository.disableStudent(1);
+            } catch (error) {
+                (error as any).details = "An error occurred in the database, please call support!";
+
+                expect(error).toHaveProperty("name", "InternalDatabaseError");
+                expect(error).toHaveProperty(
+                    "details",
+                    "An error occurred in the database, please call support!"
+                );
+            }
+
+            expect(prisma.students.update).toHaveBeenCalledTimes(1);
+        });
+    });
 });

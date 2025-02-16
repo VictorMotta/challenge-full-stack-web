@@ -1,4 +1,8 @@
-import { getAllStudentsService, createStudentService } from "../../../src/services/studentService";
+import {
+    getAllStudentsService,
+    createStudentService,
+    deleteStudentService
+} from "../../../src/services/studentService";
 import { studentRepository } from "../../../src/repositories";
 import { generateUniqueRegistrationNumber } from "../../../src/utils";
 import { conflictError } from "../../../src/errors";
@@ -130,6 +134,38 @@ describe("Student Service", () => {
                     select: { student_id: 1 },
                     update: updateData
                 });
+            } catch (error) {
+                expect(error).toEqual(notFoundError("Student not found!"));
+            }
+
+            expect(studentRepository.verifyStudentExistsById).toHaveBeenCalledWith(1);
+        });
+    });
+
+    describe("deleteStudentService", () => {
+        it("should delete a student", async () => {
+            const mockStudent = {
+                id: 1,
+                name: "John Doe",
+                document_number: "123",
+                email: "john@example.com",
+                registration_number: "RN123"
+            };
+
+            (studentRepository.verifyStudentExistsById as jest.Mock).mockResolvedValue(mockStudent);
+            (studentRepository.disableStudent as jest.Mock).mockResolvedValue(undefined);
+
+            await deleteStudentService(mockStudent.id);
+
+            expect(studentRepository.verifyStudentExistsById).toHaveBeenCalledWith(1);
+            expect(studentRepository.disableStudent).toHaveBeenCalledWith(1);
+        });
+
+        it("should throw not found error if student does not exist", async () => {
+            (studentRepository.verifyStudentExistsById as jest.Mock).mockResolvedValue(null);
+
+            try {
+                await deleteStudentService(1);
             } catch (error) {
                 expect(error).toEqual(notFoundError("Student not found!"));
             }

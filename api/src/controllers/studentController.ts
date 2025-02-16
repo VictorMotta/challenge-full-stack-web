@@ -51,7 +51,6 @@ export async function updateStudentController(req: Request, res: Response, next:
 export async function deleteStudentController(req: Request, res: Response, next: NextFunction) {
     try {
         const student_id = req.query.student_id;
-        console.log(student_id);
 
         await deleteStudentService(Number(student_id));
 
