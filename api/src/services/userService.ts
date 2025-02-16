@@ -33,7 +33,7 @@ export async function signInUserService(user: SignInUserReqType): Promise<SignIn
     if (!isPasswordValid) throw invalidCredentialsError();
 
     const token = jwt.sign(
-        { userId: userData.id },
+        { userId: userData.id, role: userData.role },
         process.env.JWT_SECRET,
         { expiresIn: "7d" } // Expira em 7 dias
     );
