@@ -36,7 +36,12 @@ export const useStudentsStore = defineStore("student", {
         } else {
           const response = await GetRecentBalanceService.instance.perform();
           console.log("Dados recebidos:", response);
-          this.students = response.students;
+
+          this.students = response.students.map((student) => ({
+            ...student,
+            document_number: this.formatCpf(student.document_number)
+          }));
+
           this.updatePagination();
         }
       } catch (error) {
@@ -110,14 +115,26 @@ export const useStudentsStore = defineStore("student", {
     updatePagination(): void {
       let items = this.filteredItems;
 
-      // Aplicando a ordenação antes da paginação
       const start = (this.page - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
+
       this.paginatedItems = items.slice(start, end);
     },
     updatePage(newPage: number): void {
       this.page = newPage;
       this.updatePagination();
+    },
+    formatCpf(cpf: string): string {
+      if (!cpf) return "";
+
+      let value = cpf.replace(/\D/g, "");
+
+      if (value.length > 3) value = value.slice(0, 3) + "." + value.slice(3);
+      if (value.length > 7) value = value.slice(0, 7) + "." + value.slice(7);
+      if (value.length > 11) value = value.slice(0, 11) + "-" + value.slice(11);
+      if (value.length > 14) value = value.slice(0, 14);
+
+      return value;
     }
   },
   getters: {

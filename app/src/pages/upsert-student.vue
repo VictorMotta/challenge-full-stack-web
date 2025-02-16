@@ -35,7 +35,7 @@
         density="compact"
         :rules="[rules.required, rules.cpf]"
         @input="applyCpfMask"
-        v-if="!isEditing"
+        :disabled="isEditing"
       />
     </v-form>
   </div>
@@ -100,23 +100,18 @@ export default {
       router.push("/");
     };
 
+    const applyCpfMask = () => {
+      studentData.value.document_number = studentsStore.formatCpf(
+        studentData.value.document_number
+      );
+    };
+
     const rules = {
       required: (v) => !!v || "Campo obrigatório",
       email: (v) =>
         /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v) || "E-mail inválido",
       cpf: (v) =>
         v.replace(/\D/g, "").length === 11 || "CPF deve ter 11 números"
-    };
-
-    const applyCpfMask = () => {
-      let value = studentData.value.document_number.replace(/\D/g, "");
-
-      if (value.length > 3) value = value.slice(0, 3) + "." + value.slice(3);
-      if (value.length > 7) value = value.slice(0, 7) + "." + value.slice(7);
-      if (value.length > 11) value = value.slice(0, 11) + "-" + value.slice(11);
-      if (value.length > 14) value = value.slice(0, 14);
-
-      studentData.value.document_number = value;
     };
 
     const handleSaveStudent = async () => {
@@ -139,9 +134,9 @@ export default {
 
     return {
       studentData,
+      applyCpfMask,
       form,
       rules,
-      applyCpfMask,
       navigateStudents,
       handleSaveStudent,
       notificationStore,
