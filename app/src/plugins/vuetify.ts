@@ -18,8 +18,9 @@ export default createVuetify({
     themes: {
       light: {
         colors: {
-          primary: "#6200ea",
-          secondary: "#03dac6"
+          primary: "#999999",
+          secondary: "#03dac6",
+          dark_gray: "#2e2e2e"
         }
       }
     }
@@ -28,6 +29,13 @@ export default createVuetify({
     VBtn: {
       color: "secondary",
       variant: "elevated"
+    }
+  },
+  aliases: {
+    PrimaryBtn: {
+      component: "VBtn",
+      color: "primary",
+      variant: "outlined"
     }
   }
 });

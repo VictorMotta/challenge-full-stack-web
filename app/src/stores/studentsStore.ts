@@ -1,7 +1,7 @@
-import type { StudentStoreProps } from "@/domain/types/students";
-import type { GetAllStudentsUseCase } from "@/domain/useCases/students/getAllStudentsUseCase";
-import { GetRecentBalanceService } from "@/services/students/getAllStudentsService";
 import { defineStore } from "pinia";
+import { GetRecentBalanceService } from "@/services/students/getAllStudentsService";
+import type { GetAllStudentsUseCase } from "@/domain/useCases/students/getAllStudentsUseCase";
+import type { StudentStoreProps } from "@/domain/types/studentsTypes";
 
 export const useStudentsStore = defineStore("student", {
   state: () =>
@@ -39,9 +39,12 @@ export const useStudentsStore = defineStore("student", {
       }
     },
     updatePagination(): void {
+      let items = this.filteredItems;
+
+      // Aplicando a ordenação antes da paginação
       const start = (this.page - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
-      this.paginatedItems = this.filteredItems.slice(start, end);
+      this.paginatedItems = items.slice(start, end);
     },
     updatePage(newPage: number): void {
       this.page = newPage;

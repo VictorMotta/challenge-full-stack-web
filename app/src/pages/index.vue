@@ -13,9 +13,11 @@
         dense
         density="compact"
       />
-      <v-btn @click="searchStudents">Pesquisar</v-btn>
+      <v-btn @click="searchStudents"> Pesquisar </v-btn>
     </div>
-    <v-btn class="mr-5"> Cadastrar Aluno </v-btn>
+    <v-btn class="mr-5" @click="navigateManageStudents">
+      Cadastrar Aluno
+    </v-btn>
   </div>
 
   <v-data-table-server
@@ -32,32 +34,37 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watchEffect } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import TitlePage from "../components/ui/TitlePage.vue";
-import { useStudentsStore } from "../stores/Students";
+import { useStudentsStore } from "../stores/studentsStore";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "Index",
   components: { TitlePage },
   setup() {
     const studentsStore = useStudentsStore();
-    const searchQuery = ref(""); // Valor da pesquisa controlado manualmente
+    const searchQuery = ref("");
+    const router = useRouter();
 
-    // Carregar os primeiros itens ao montar a página
     onMounted(() => {
-      studentsStore.fetchStudents(false); // Carrega todos os alunos sem filtro
+      studentsStore.fetchStudents(false);
     });
 
-    // Função que chama a pesquisa com o valor da busca
     const searchStudents = () => {
-      studentsStore.search = searchQuery.value; // Atribui o valor da busca
-      studentsStore.fetchStudents(true); // Passa true para indicar que é uma pesquisa
+      studentsStore.search = searchQuery.value;
+      studentsStore.fetchStudents(true);
+    };
+
+    const navigateManageStudents = () => {
+      router.push("/create-student");
     };
 
     return {
       studentsStore,
       searchQuery,
-      searchStudents
+      searchStudents,
+      navigateManageStudents
     };
   }
 });
@@ -76,7 +83,8 @@ export default defineComponent({
   display: flex;
   align-items: center;
 }
-.input-search {
-  widows: 50%;
+
+.v-text-field {
+  margin-top: 22px;
 }
 </style>
