@@ -30,7 +30,28 @@
     :loading="studentsStore.loading"
     :page="studentsStore.page"
     @update:page="studentsStore.updatePage"
-  />
+  >
+    <template v-slot:[`item.menu`]="{ item }">
+      <v-menu>
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            color="primary"
+            icon="mdi-dots-vertical"
+            variant="text"
+          ></v-btn>
+        </template>
+        <v-list>
+          <v-list-item @click="editStudent(item)">
+            <v-list-item-title>Editar</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="deleteStudent(item)">
+            <v-list-item-title>Excluir</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </template>
+  </v-data-table-server>
 
   <v-snackbar
     v-model="notificationStore.showSnackbar"
@@ -67,8 +88,13 @@ export default defineComponent({
       studentsStore.fetchStudents(true);
     };
 
+    const editStudent = (student: any) => {
+      console.log(student);
+      router.push(`/upsert-student?id=${student.id}`);
+    };
+
     const navigateManageStudents = () => {
-      router.push("/create-student");
+      router.push("/upsert-student");
     };
 
     return {
@@ -76,7 +102,8 @@ export default defineComponent({
       searchQuery,
       searchStudents,
       navigateManageStudents,
-      notificationStore
+      notificationStore,
+      editStudent
     };
   }
 });

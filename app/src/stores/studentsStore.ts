@@ -18,7 +18,8 @@ export const useStudentsStore = defineStore("student", {
         { title: "Nome", value: "name" },
         { title: "E-mail", value: "email" },
         { title: "RA", value: "registration_number" },
-        { title: "CPF", value: "document_number" }
+        { title: "CPF", value: "document_number" },
+        { title: "", value: "menu" }
       ] as { title: string; value: keyof GetAllStudentsUseCase.Students }[]
     }) as StudentStoreProps,
   actions: {
