@@ -18,7 +18,14 @@ export async function createStudentService(body: Partial<Students>): Promise<voi
         document_number,
         email
     );
-    if (student) throw conflictError("Student already exists");
+
+    if (student) {
+        if (student.active === false) {
+            return await studentRepository.disableOrActiveStudent(student.id, true);
+        } else {
+            throw conflictError("Student already exists");
+        }
+    }
 
     const studentRN = await generateUniqueRegistrationNumber();
 
@@ -48,5 +55,5 @@ export async function deleteStudentService(student_id: number): Promise<void> {
     const student = await studentRepository.verifyStudentExistsById(student_id);
     if (!student) throw notFoundError("Student not found!");
 
-    await studentRepository.disableStudent(student_id);
+    await studentRepository.disableOrActiveStudent(student_id, false);
 }

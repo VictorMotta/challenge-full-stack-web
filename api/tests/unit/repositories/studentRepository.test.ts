@@ -242,7 +242,7 @@ describe("studentRepository", () => {
         it("should disable a student", async () => {
             (prisma.students.update as jest.Mock).mockResolvedValue(undefined);
 
-            await studentRepository.disableStudent(1);
+            await studentRepository.disableOrActiveStudent(1, false);
 
             expect(prisma.students.update).toHaveBeenCalledTimes(1);
             expect(prisma.students.update).toHaveBeenCalledWith({
@@ -255,7 +255,7 @@ describe("studentRepository", () => {
             (prisma.students.update as jest.Mock).mockRejectedValue(internalDatabaseError());
 
             try {
-                await studentRepository.disableStudent(1);
+                await studentRepository.disableOrActiveStudent(1, false);
             } catch (error) {
                 (error as any).details = "An error occurred in the database, please call support!";
 

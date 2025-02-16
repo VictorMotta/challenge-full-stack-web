@@ -97,6 +97,29 @@ describe("Student Service", () => {
                 "john@example.com"
             );
         });
+
+        it("should reactivate an inactive student if they already exist", async () => {
+            const mockStudent = {
+                id: 1,
+                document_number: "123",
+                name: "John Doe",
+                email: "john@example.com",
+                active: false
+            };
+
+            (studentRepository.getStudentByDocumentNumberOrEmail as jest.Mock).mockResolvedValue(
+                mockStudent
+            );
+            (studentRepository.disableOrActiveStudent as jest.Mock).mockResolvedValue(undefined);
+
+            await createStudentService(mockStudent);
+
+            expect(studentRepository.getStudentByDocumentNumberOrEmail).toHaveBeenCalledWith(
+                "123",
+                "john@example.com"
+            );
+            expect(studentRepository.disableOrActiveStudent).toHaveBeenCalledWith(1, true);
+        });
     });
 
     describe("updateStudentService", () => {
@@ -153,12 +176,12 @@ describe("Student Service", () => {
             };
 
             (studentRepository.verifyStudentExistsById as jest.Mock).mockResolvedValue(mockStudent);
-            (studentRepository.disableStudent as jest.Mock).mockResolvedValue(undefined);
+            (studentRepository.disableOrActiveStudent as jest.Mock).mockResolvedValue(undefined);
 
             await deleteStudentService(mockStudent.id);
 
             expect(studentRepository.verifyStudentExistsById).toHaveBeenCalledWith(1);
-            expect(studentRepository.disableStudent).toHaveBeenCalledWith(1);
+            expect(studentRepository.disableOrActiveStudent).toHaveBeenCalledWith(1, false);
         });
 
         it("should throw not found error if student does not exist", async () => {

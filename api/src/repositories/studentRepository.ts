@@ -108,14 +108,14 @@ async function updateStudent(student_id: number, update: Partial<Students>): Pro
     }
 }
 
-async function disableStudent(student_id: number): Promise<void> {
+async function disableOrActiveStudent(student_id: number, active: boolean): Promise<void> {
     try {
         await prisma.students.update({
             where: {
                 id: student_id
             },
             data: {
-                active: false
+                active
             }
         });
     } catch (error) {
@@ -131,5 +131,5 @@ export const studentRepository = {
     verifyRAExists,
     verifyStudentExistsById,
     updateStudent,
-    disableStudent
+    disableOrActiveStudent
 };
