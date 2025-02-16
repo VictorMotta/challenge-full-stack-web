@@ -78,6 +78,8 @@ export default defineComponent({
     const router = useRouter();
 
     onMounted(() => {
+      searchQuery.value = "";
+      studentsStore.search = "";
       studentsStore.fetchStudents(false);
     });
 

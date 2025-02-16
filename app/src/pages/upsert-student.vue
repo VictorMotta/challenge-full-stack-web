@@ -64,7 +64,7 @@ import { useNotificationStore } from "../stores/notificationStore";
 import { useStudentsStore } from "../stores/studentsStore";
 
 export default {
-  name: "CreateStudent",
+  name: "UpsertStudent",
   setup() {
     const notificationStore = useNotificationStore();
     const studentsStore = useStudentsStore();
