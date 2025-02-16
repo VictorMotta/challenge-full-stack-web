@@ -54,10 +54,10 @@
           ></v-btn>
         </template>
         <v-list>
-          <v-list-item @click="editStudent(item)">
+          <v-list-item value="1" @click="editStudent(item)">
             <v-list-item-title>Editar</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="deleteStudent(item)">
+          <v-list-item value="1" @click="toggleDialogDelete(item.id)">
             <v-list-item-title>Excluir</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -65,6 +65,11 @@
     </template>
   </v-data-table-server>
 
+  <DialogDeleteStudent
+    :dialog="showDialogDelete"
+    :studentId="selectedStudentId"
+    @update:dialog="toggleDialogDelete"
+  />
   <v-snackbar
     v-model="notificationStore.showSnackbar"
     :color="notificationStore.color"
@@ -75,25 +80,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watchEffect } from "vue";
-import TitlePage from "../components/ui/TitlePage.vue";
+import { onMounted, ref } from "vue";
+import TitlePage from "../components/TitlePage.vue";
 import { useStudentsStore } from "../stores/studentsStore";
 import { useNotificationStore } from "../stores/notificationStore";
+import DialogDeleteStudent from "../components/DialogDeleteStudent.vue";
 import { useRouter } from "vue-router";
 
-export default defineComponent({
+export default {
   name: "Index",
-  components: { TitlePage },
+  components: { TitlePage, DialogDeleteStudent },
   setup() {
     const studentsStore = useStudentsStore();
     const searchQuery = ref("");
     const router = useRouter();
+    const showDialogDelete = ref(false);
+    const selectedStudentId = ref<number>(0);
 
     onMounted(() => {
       searchQuery.value = "";
       studentsStore.search = "";
       studentsStore.fetchStudents(false);
     });
+
+    const toggleDialogDelete = (studentId: number) => {
+      selectedStudentId.value = studentId;
+      showDialogDelete.value = !showDialogDelete.value;
+    };
 
     const notificationStore = useNotificationStore();
 
@@ -117,10 +130,13 @@ export default defineComponent({
       searchStudents,
       navigateManageStudents,
       notificationStore,
-      editStudent
+      editStudent,
+      showDialogDelete,
+      selectedStudentId,
+      toggleDialogDelete
     };
   }
-});
+};
 </script>
 
 <style scoped>

@@ -5,6 +5,7 @@ import type { StudentStoreProps } from "@/domain/types/studentsTypes";
 import { CreateStudentService } from "@/services/students/createStudentService";
 import { useNotificationStore } from "./notificationStore";
 import { UpdateStudentService } from "@/services/students/updateStudentService";
+import { DeleteStudentService } from "@/services/students/deleteStudentService";
 
 export const useStudentsStore = defineStore("student", {
   state: () =>
@@ -109,6 +110,23 @@ export const useStudentsStore = defineStore("student", {
       } catch (error) {
         console.error(error);
         notificationStore.showNotification("Erro ao cadastrar aluno!", "error");
+        return false;
+      }
+    },
+    async deleteStudent(studentId: number): Promise<boolean> {
+      const notificationStore = useNotificationStore();
+      try {
+        await DeleteStudentService.instance.perform({ student_id: studentId });
+
+        notificationStore.showNotification(
+          "Aluno deletado com sucesso!",
+          "success"
+        );
+
+        return true;
+      } catch (error) {
+        console.error(error);
+        notificationStore.showNotification("Erro ao deletar aluno!", "error");
         return false;
       }
     },
