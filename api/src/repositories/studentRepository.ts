@@ -4,7 +4,11 @@ import { internalDatabaseError } from "errors";
 
 async function getAllStudents(): Promise<Students[]> {
     try {
-        const students = await prisma.students.findMany();
+        const students = await prisma.students.findMany({
+            where: {
+                active: true
+            }
+        });
 
         return students;
     } catch (error) {
