@@ -31,12 +31,21 @@
     :page="studentsStore.page"
     @update:page="studentsStore.updatePage"
   />
+
+  <v-snackbar
+    v-model="notificationStore.showSnackbar"
+    :color="notificationStore.color"
+    :timeout="3000"
+  >
+    {{ notificationStore.message }}
+  </v-snackbar>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, watchEffect } from "vue";
 import TitlePage from "../components/ui/TitlePage.vue";
 import { useStudentsStore } from "../stores/studentsStore";
+import { useNotificationStore } from "../stores/notificationStore";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
@@ -51,6 +60,8 @@ export default defineComponent({
       studentsStore.fetchStudents(false);
     });
 
+    const notificationStore = useNotificationStore();
+
     const searchStudents = () => {
       studentsStore.search = searchQuery.value;
       studentsStore.fetchStudents(true);
@@ -64,7 +75,8 @@ export default defineComponent({
       studentsStore,
       searchQuery,
       searchStudents,
-      navigateManageStudents
+      navigateManageStudents,
+      notificationStore
     };
   }
 });

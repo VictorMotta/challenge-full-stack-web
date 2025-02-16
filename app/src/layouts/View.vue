@@ -17,7 +17,7 @@
     </v-navigation-drawer>
 
     <v-app-bar>
-      <v-app-bar-nav-icon @click="drawer = !drawer" />
+      <v-app-bar-nav-icon @click="drawer = !drawer" color="#000" />
     </v-app-bar>
 
     <v-main>
@@ -33,7 +33,7 @@ export default defineComponent({
   name: "View",
   data() {
     return {
-      drawer: true, // Deixe como false para evitar problemas no v-model
+      drawer: false,
       items: [
         { to: "/", text: "Alunos", icon: "mdi-clock" },
         { to: "/coursers", text: "Cursos", icon: "mdi-account" }

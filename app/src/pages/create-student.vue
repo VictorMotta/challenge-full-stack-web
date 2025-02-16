@@ -45,18 +45,26 @@
     <v-btn class="ml-5" @click="createStudent"> Salvar </v-btn>
   </div>
 
-  <v-snackbar v-model="snackbar.show" :timeout="3000" color="error">
-    {{ snackbar.message }}
+  <v-snackbar
+    v-model="notificationStore.showSnackbar"
+    :color="notificationStore.color"
+    :timeout="3000"
+  >
+    {{ notificationStore.message }}
   </v-snackbar>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import { CreateStudentService } from "../services/students/createStudentService";
+import { useNotificationStore } from "../stores/notificationStore";
 
 export default {
+  name: "CreateStudent",
   setup() {
+    const notificationStore = useNotificationStore();
+
     const router = useRouter();
     const form = ref(null);
 
@@ -69,11 +77,6 @@ export default {
     const navigateStudents = () => {
       router.push("/");
     };
-
-    const snackbar = ref({
-      show: false,
-      message: ""
-    });
 
     const rules = {
       required: (v) => !!v || "Campo obrigatório",
@@ -105,13 +108,17 @@ export default {
 
       console.log("Payload enviado:", studentDataPayload);
 
+      notificationStore.showNotification(
+        "Aluno cadastrado com sucesso!",
+        "success"
+      );
+
       try {
         await CreateStudentService.instance.perform(studentDataPayload);
         navigateStudents();
       } catch (error) {
         console.error(error);
-        snackbar.value.message = "Erro ao cadastrar aluno!";
-        snackbar.value.show = true;
+        notificationStore.showNotification("Erro ao cadastrar aluno!", "error");
       }
     };
 
@@ -122,7 +129,7 @@ export default {
       applyCpfMask,
       navigateStudents,
       createStudent,
-      snackbar
+      notificationStore
     };
   }
 };
