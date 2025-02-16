@@ -2,6 +2,8 @@ import { defineStore } from "pinia";
 import { GetRecentBalanceService } from "@/services/students/getAllStudentsService";
 import type { GetAllStudentsUseCase } from "@/domain/useCases/students/getAllStudentsUseCase";
 import type { StudentStoreProps } from "@/domain/types/studentsTypes";
+import { CreateStudentService } from "@/services/students/createStudentService";
+import { useNotificationStore } from "./notificationStore";
 
 export const useStudentsStore = defineStore("student", {
   state: () =>
@@ -36,6 +38,35 @@ export const useStudentsStore = defineStore("student", {
         console.error("Erro ao buscar alunos:", error);
       } finally {
         this.loading = false;
+      }
+    },
+    async createStudent(studentData: {
+      name: string;
+      email: string;
+      document_number: string;
+    }): Promise<boolean> {
+      const notificationStore = useNotificationStore();
+      try {
+        const document_number = studentData.document_number.replace(/\D/g, "");
+
+        const body = {
+          name: studentData.name,
+          email: studentData.email,
+          document_number
+        };
+
+        await CreateStudentService.instance.perform(body);
+
+        notificationStore.showNotification(
+          "Aluno cadastrado com sucesso!",
+          "success"
+        );
+
+        return true;
+      } catch (error) {
+        console.error(error);
+        notificationStore.showNotification("Erro ao cadastrar aluno!", "error");
+        return false;
       }
     },
     updatePagination(): void {

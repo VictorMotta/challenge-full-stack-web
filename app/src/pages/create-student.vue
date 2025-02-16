@@ -42,7 +42,7 @@
     <v-btn color="primary" variant="outlined" @click="navigateStudents">
       Cancel
     </v-btn>
-    <v-btn class="ml-5" @click="createStudent"> Salvar </v-btn>
+    <v-btn class="ml-5" @click="handleCreateStudent"> Salvar </v-btn>
   </div>
 
   <v-snackbar
@@ -55,15 +55,16 @@
 </template>
 
 <script>
-import { ref, watchEffect } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { CreateStudentService } from "../services/students/createStudentService";
 import { useNotificationStore } from "../stores/notificationStore";
+import { useStudentsStore } from "../stores/studentsStore";
 
 export default {
   name: "CreateStudent",
   setup() {
     const notificationStore = useNotificationStore();
+    const studentsStore = useStudentsStore();
 
     const router = useRouter();
     const form = ref(null);
@@ -97,28 +98,16 @@ export default {
       studentData.value.document_number = value;
     };
 
-    const createStudent = async () => {
-      const { valid } = await form.value.validate();
-      if (!valid) return;
+    const handleCreateStudent = async () => {
+      const validationResult = await form.value?.validate();
+      if (!validationResult?.valid) return;
 
-      const studentDataPayload = { ...studentData.value };
-
-      studentDataPayload.document_number =
-        studentDataPayload.document_number.replace(/\D/g, "");
-
-      console.log("Payload enviado:", studentDataPayload);
-
-      notificationStore.showNotification(
-        "Aluno cadastrado com sucesso!",
-        "success"
+      const navigate = await studentsStore.createStudent(
+        studentData.value,
+        router
       );
-
-      try {
-        await CreateStudentService.instance.perform(studentDataPayload);
+      if (navigate) {
         navigateStudents();
-      } catch (error) {
-        console.error(error);
-        notificationStore.showNotification("Erro ao cadastrar aluno!", "error");
       }
     };
 
@@ -128,7 +117,7 @@ export default {
       rules,
       applyCpfMask,
       navigateStudents,
-      createStudent,
+      handleCreateStudent,
       notificationStore
     };
   }
