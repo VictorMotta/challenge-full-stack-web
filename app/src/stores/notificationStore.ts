@@ -10,9 +10,8 @@ export const useNotificationStore = defineStore("notification", {
     showNotification(msg: string, type: "success" | "error" = "success") {
       this.message = msg;
       this.color = type;
-      this.showSnackbar = true; // Ativa o Snackbar
+      this.showSnackbar = true;
 
-      // Fecha automaticamente após 3 segundos
       setTimeout(() => {
         this.clearNotification();
       }, 3000);

@@ -4,6 +4,7 @@ import type { GetAllStudentsUseCase } from "@/domain/useCases/students/getAllStu
 import type { StudentStoreProps } from "@/domain/types/studentsTypes";
 import { CreateStudentService } from "@/services/students/createStudentService";
 import { useNotificationStore } from "./notificationStore";
+import { UpdateStudentService } from "@/services/students/updateStudentService";
 
 export const useStudentsStore = defineStore("student", {
   state: () =>
@@ -18,10 +19,14 @@ export const useStudentsStore = defineStore("student", {
         { title: "Nome", value: "name" },
         { title: "E-mail", value: "email" },
         { title: "RA", value: "registration_number" },
-        { title: "CPF", value: "document_number" }
+        { title: "CPF", value: "document_number" },
+        { title: "", value: "menu" }
       ] as { title: string; value: keyof GetAllStudentsUseCase.Students }[]
     }) as StudentStoreProps,
   actions: {
+    getStudentById(id: number) {
+      return this.students.find((student) => student.id === id) || null;
+    },
     async fetchStudents(isSearch: boolean = false): Promise<void> {
       try {
         this.loading = true;
@@ -31,7 +36,12 @@ export const useStudentsStore = defineStore("student", {
         } else {
           const response = await GetRecentBalanceService.instance.perform();
           console.log("Dados recebidos:", response);
-          this.students = response.students;
+
+          this.students = response.students.map((student) => ({
+            ...student,
+            document_number: this.formatCpf(student.document_number)
+          }));
+
           this.updatePagination();
         }
       } catch (error) {
@@ -69,17 +79,62 @@ export const useStudentsStore = defineStore("student", {
         return false;
       }
     },
+    async updateStudent(
+      studentId: number,
+      studentData: {
+        name: string;
+        email: string;
+      }
+    ): Promise<boolean> {
+      const notificationStore = useNotificationStore();
+      try {
+        const body = {
+          select: {
+            student_id: studentId
+          },
+          update: {
+            name: studentData.name,
+            email: studentData.email
+          }
+        };
+
+        await UpdateStudentService.instance.perform(body);
+
+        notificationStore.showNotification(
+          "Aluno cadastrado com sucesso!",
+          "success"
+        );
+
+        return true;
+      } catch (error) {
+        console.error(error);
+        notificationStore.showNotification("Erro ao cadastrar aluno!", "error");
+        return false;
+      }
+    },
     updatePagination(): void {
       let items = this.filteredItems;
 
-      // Aplicando a ordenação antes da paginação
       const start = (this.page - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
+
       this.paginatedItems = items.slice(start, end);
     },
     updatePage(newPage: number): void {
       this.page = newPage;
       this.updatePagination();
+    },
+    formatCpf(cpf: string): string {
+      if (!cpf) return "";
+
+      let value = cpf.replace(/\D/g, "");
+
+      if (value.length > 3) value = value.slice(0, 3) + "." + value.slice(3);
+      if (value.length > 7) value = value.slice(0, 7) + "." + value.slice(7);
+      if (value.length > 11) value = value.slice(0, 11) + "-" + value.slice(11);
+      if (value.length > 14) value = value.slice(0, 14);
+
+      return value;
     }
   },
   getters: {

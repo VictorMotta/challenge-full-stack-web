@@ -10,7 +10,7 @@
         </v-list-subheader>
         <router-link v-for="(item, i) in items" :key="i" :to="item.to">
           <v-list-item :value="item" class="box-menu">
-            <v-list-item-title :text-content="item.text" />
+            <v-list-item-title>{{ item.text }}</v-list-item-title>
           </v-list-item>
         </router-link>
       </v-list>

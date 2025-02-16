@@ -27,10 +27,43 @@
     :items-length="studentsStore.filteredItems.length"
     :items-per-page="studentsStore.itemsPerPage"
     :server-items-length="studentsStore.filteredItems.length"
+    :items-per-page-options="[
+      { value: 5, title: '5' },
+      { value: 10, title: '10' },
+      { value: 20, title: '20' },
+      { value: 50, title: '50' },
+      { value: 100, title: '100' },
+      { value: -1, title: 'Todos' }
+    ]"
     :loading="studentsStore.loading"
     :page="studentsStore.page"
     @update:page="studentsStore.updatePage"
-  />
+    @update:items-per-page="
+      studentsStore.itemsPerPage = $event;
+      studentsStore.updatePagination();
+    "
+  >
+    <template v-slot:[`item.menu`]="{ item }">
+      <v-menu>
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            color="primary"
+            icon="mdi-dots-vertical"
+            variant="text"
+          ></v-btn>
+        </template>
+        <v-list>
+          <v-list-item @click="editStudent(item)">
+            <v-list-item-title>Editar</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="deleteStudent(item)">
+            <v-list-item-title>Excluir</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </template>
+  </v-data-table-server>
 
   <v-snackbar
     v-model="notificationStore.showSnackbar"
@@ -57,6 +90,8 @@ export default defineComponent({
     const router = useRouter();
 
     onMounted(() => {
+      searchQuery.value = "";
+      studentsStore.search = "";
       studentsStore.fetchStudents(false);
     });
 
@@ -67,8 +102,13 @@ export default defineComponent({
       studentsStore.fetchStudents(true);
     };
 
+    const editStudent = (student: any) => {
+      console.log(student);
+      router.push(`/upsert-student?id=${student.id}`);
+    };
+
     const navigateManageStudents = () => {
-      router.push("/create-student");
+      router.push("/upsert-student");
     };
 
     return {
@@ -76,7 +116,8 @@ export default defineComponent({
       searchQuery,
       searchStudents,
       navigateManageStudents,
-      notificationStore
+      notificationStore,
+      editStudent
     };
   }
 });
