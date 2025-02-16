@@ -2,7 +2,16 @@ name: Pull Request on Github
 on: [pull_request]
 jobs:
   PullRequest-GitHub:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
     steps:
       - uses: actions/checkout@v4
 
@@ -10,6 +19,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
+
+      - name: create .env.test file
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres" > api/.env.test
 
       - name: Install dependencies for API
         run: |
@@ -19,4 +32,4 @@ jobs:
       - name: Run tests for API
         run: |
           cd api
-          npm test
+          npm run prisma:migration:test && dotenv -e .env.test jest -- -i
