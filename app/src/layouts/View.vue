@@ -5,17 +5,19 @@
         <img src="../../public/logo.jpg" alt="Grupo a Logo" />
       </div>
       <v-list>
-        <v-list-subheader class="box-title">Modulo Acadêmico</v-list-subheader>
+        <v-list-subheader class="box-title">
+          Modulo Acadêmico
+        </v-list-subheader>
         <router-link v-for="(item, i) in items" :key="i" :to="item.to">
           <v-list-item :value="item" class="box-menu">
-            <v-list-item-title :textContent="item.text" />
+            <v-list-item-title :text-content="item.text" />
           </v-list-item>
         </router-link>
       </v-list>
     </v-navigation-drawer>
 
     <v-app-bar>
-      <v-app-bar-nav-icon @click="drawer = !drawer" />
+      <v-app-bar-nav-icon @click="drawer = !drawer" color="#000" />
     </v-app-bar>
 
     <v-main>
@@ -31,7 +33,7 @@ export default defineComponent({
   name: "View",
   data() {
     return {
-      drawer: true, // Deixe como false para evitar problemas no v-model
+      drawer: false,
       items: [
         { to: "/", text: "Alunos", icon: "mdi-clock" },
         { to: "/coursers", text: "Cursos", icon: "mdi-account" }
