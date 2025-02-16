@@ -1,2 +1,2 @@
-export * from "./types";
+export * from "./applicationTypes";
 export * from "./studentTypes";
