@@ -20,14 +20,18 @@ export const useStudentsStore = defineStore("student", {
       ] as { title: string; value: keyof GetAllStudentsUseCase.Students }[]
     }) as StudentStoreProps,
   actions: {
-    async fetchStudents(): Promise<void> {
+    async fetchStudents(isSearch: boolean = false): Promise<void> {
       try {
         this.loading = true;
 
-        const response = await GetRecentBalanceService.instance.perform();
-        console.log("Dados recebidos:", response);
-        this.students = response.students;
-        this.updatePagination();
+        if (isSearch) {
+          this.updatePagination();
+        } else {
+          const response = await GetRecentBalanceService.instance.perform();
+          console.log("Dados recebidos:", response);
+          this.students = response.students;
+          this.updatePagination();
+        }
       } catch (error) {
         console.error("Erro ao buscar alunos:", error);
       } finally {
