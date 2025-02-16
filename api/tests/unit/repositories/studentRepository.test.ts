@@ -8,7 +8,8 @@ jest.mock("config", () => ({
             findMany: jest.fn(),
             findFirst: jest.fn(),
             create: jest.fn(),
-            findUnique: jest.fn()
+            findUnique: jest.fn(),
+            update: jest.fn()
         }
     }
 }));
@@ -167,6 +168,73 @@ describe("studentRepository", () => {
             }
 
             expect(prisma.students.findUnique).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("verifyStudentExistsById", () => {
+        it("should return a student if student ID exists", async () => {
+            const mockStudent = { id: 1, name: "John Doe" };
+            (prisma.students.findUnique as jest.Mock).mockResolvedValue(mockStudent);
+
+            const result = await studentRepository.verifyStudentExistsById(1);
+
+            expect(result).toEqual(mockStudent);
+            expect(prisma.students.findUnique).toHaveBeenCalledTimes(1);
+            expect(prisma.students.findUnique).toHaveBeenCalledWith({
+                where: { id: 1 }
+            });
+        });
+
+        it("should throw an internalDatabaseError on failure", async () => {
+            (prisma.students.findUnique as jest.Mock).mockRejectedValue(internalDatabaseError());
+
+            try {
+                await studentRepository.verifyStudentExistsById(1);
+            } catch (error) {
+                (error as any).details = "An error occurred in the database, please call support!";
+
+                expect(error).toHaveProperty("name", "InternalDatabaseError");
+                expect(error).toHaveProperty(
+                    "details",
+                    "An error occurred in the database, please call support!"
+                );
+            }
+
+            expect(prisma.students.findUnique).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("updateStudent", () => {
+        it("should update a student", async () => {
+            const mockStudent = { id: 1, name: "John Doe", email: "john@example.com" };
+            (prisma.students.update as jest.Mock).mockResolvedValue(mockStudent);
+
+            const result = await studentRepository.updateStudent(1, { name: "John Doe" });
+
+            expect(result).toEqual(mockStudent);
+            expect(prisma.students.update).toHaveBeenCalledTimes(1);
+            expect(prisma.students.update).toHaveBeenCalledWith({
+                where: { id: 1 },
+                data: { name: "John Doe" }
+            });
+        });
+
+        it("should throw an internalDatabaseError on failure", async () => {
+            (prisma.students.update as jest.Mock).mockRejectedValue(internalDatabaseError());
+
+            try {
+                await studentRepository.updateStudent(1, { name: "John Doe" });
+            } catch (error) {
+                (error as any).details = "An error occurred in the database, please call support!";
+
+                expect(error).toHaveProperty("name", "InternalDatabaseError");
+                expect(error).toHaveProperty(
+                    "details",
+                    "An error occurred in the database, please call support!"
+                );
+            }
+
+            expect(prisma.students.update).toHaveBeenCalledTimes(1);
         });
     });
 });

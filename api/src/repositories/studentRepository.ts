@@ -75,9 +75,40 @@ async function verifyRAExists(rn: string): Promise<Students> {
     }
 }
 
+async function verifyStudentExistsById(student_id: number): Promise<Students> {
+    try {
+        const student = await prisma.students.findUnique({
+            where: {
+                id: student_id
+            }
+        });
+        return student;
+    } catch (error) {
+        console.log(error);
+        throw internalDatabaseError();
+    }
+}
+
+async function updateStudent(student_id: number, update: Partial<Students>): Promise<Students> {
+    try {
+        const student = await prisma.students.update({
+            where: {
+                id: student_id
+            },
+            data: update
+        });
+        return student;
+    } catch (error) {
+        console.log(error);
+        throw internalDatabaseError();
+    }
+}
+
 export const studentRepository = {
     getAllStudents,
     getStudentByDocumentNumberOrEmail,
     createStudent,
-    verifyRAExists
+    verifyRAExists,
+    verifyStudentExistsById,
+    updateStudent
 };

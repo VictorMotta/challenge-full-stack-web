@@ -1,9 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import {
     getAllStudentsController,
-    createStudentController
+    createStudentController,
+    updateStudentController
 } from "../../../src/controllers/studentController";
-import { createStudentService, getAllStudentsService } from "../../../src/services";
+import {
+    createStudentService,
+    getAllStudentsService,
+    updateStudentService
+} from "../../../src/services";
 import httpStatus from "http-status";
 
 jest.mock("../../../src/services");
@@ -17,7 +22,8 @@ describe("Student Controller", () => {
         req = {};
         res = {
             json: jest.fn(),
-            sendStatus: jest.fn()
+            sendStatus: jest.fn(),
+            status: jest.fn().mockReturnThis()
         };
         next = jest.fn();
     });
@@ -58,6 +64,29 @@ describe("Student Controller", () => {
             (createStudentService as jest.Mock).mockRejectedValue(error);
 
             await createStudentController(req as Request, res as Response, next);
+
+            expect(next).toHaveBeenCalledWith(error);
+        });
+    });
+
+    describe("updateStudentController", () => {
+        it("should update a student and return 200 status with the student data", async () => {
+            req.body = { id: 1, name: "John Doe Updated" };
+            const updatedStudent = { id: 1, name: "John Doe Updated" };
+            (updateStudentService as jest.Mock).mockResolvedValue(updatedStudent);
+
+            await updateStudentController(req as Request, res as Response, next);
+
+            expect(updateStudentService).toHaveBeenCalledWith(req.body);
+            expect(res.status).toHaveBeenCalledWith(httpStatus.OK);
+            expect(res.json).toHaveBeenCalledWith({ student: updatedStudent });
+        });
+
+        it("should handle errors", async () => {
+            const error = new Error("Something went wrong");
+            (updateStudentService as jest.Mock).mockRejectedValue(error);
+
+            await updateStudentController(req as Request, res as Response, next);
 
             expect(next).toHaveBeenCalledWith(error);
         });

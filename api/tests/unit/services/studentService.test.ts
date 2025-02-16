@@ -2,6 +2,8 @@ import { getAllStudentsService, createStudentService } from "../../../src/servic
 import { studentRepository } from "../../../src/repositories";
 import { generateUniqueRegistrationNumber } from "../../../src/utils";
 import { conflictError } from "../../../src/errors";
+import { updateStudentService } from "../../../src/services/studentService";
+import { notFoundError } from "../../../src/errors/notFoundError";
 
 jest.mock("../../../src/repositories");
 jest.mock("../../../src/utils");
@@ -90,6 +92,49 @@ describe("Student Service", () => {
                 "123",
                 "john@example.com"
             );
+        });
+    });
+
+    describe("updateStudentService", () => {
+        it("should update student data", async () => {
+            const mockStudent = {
+                id: 1,
+                name: "John Doe",
+                document_number: "123",
+                email: "john@example.com",
+                registration_number: "RN123"
+            };
+            const updateData = { name: "John Updated", email: "john_update@example.com" };
+            const updatedStudent = { ...mockStudent, ...updateData };
+
+            (studentRepository.verifyStudentExistsById as jest.Mock).mockResolvedValue(mockStudent);
+            (studentRepository.updateStudent as jest.Mock).mockResolvedValue(updatedStudent);
+
+            const result = await updateStudentService({
+                select: { student_id: 1 },
+                update: updateData
+            });
+
+            expect(studentRepository.verifyStudentExistsById).toHaveBeenCalledWith(1);
+            expect(studentRepository.updateStudent).toHaveBeenCalledWith(1, updateData);
+            expect(result).toEqual(updatedStudent);
+        });
+
+        it("should throw not found error if student does not exist", async () => {
+            const updateData = { name: "John Updated", email: "john@example.com" };
+
+            (studentRepository.verifyStudentExistsById as jest.Mock).mockResolvedValue(null);
+
+            try {
+                await updateStudentService({
+                    select: { student_id: 1 },
+                    update: updateData
+                });
+            } catch (error) {
+                expect(error).toEqual(notFoundError("Student not found!"));
+            }
+
+            expect(studentRepository.verifyStudentExistsById).toHaveBeenCalledWith(1);
         });
     });
 });
