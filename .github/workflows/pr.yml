@@ -1,0 +1,21 @@
+name: Pull Request on Github
+on: [pull_request]
+jobs:
+  PullRequest-GitHub:
+    runs-on: ubuntu-latest # GitHub nos fornecerá a máquina.
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Ajuste para a versão do Node.js que você está usando
+
+      - name: Install dependencies for API
+        working-directory: ./api  # Mude para o diretório 'api' onde está o seu backend
+        run: npm install
+
+      - name: Run tests for API
+        working-directory: ./api  # Executa os testes do backend
+        run: npm test
