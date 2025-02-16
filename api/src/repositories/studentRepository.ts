@@ -108,11 +108,28 @@ async function updateStudent(student_id: number, update: Partial<Students>): Pro
     }
 }
 
+async function disableStudent(student_id: number): Promise<void> {
+    try {
+        await prisma.students.update({
+            where: {
+                id: student_id
+            },
+            data: {
+                active: false
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        throw internalDatabaseError();
+    }
+}
+
 export const studentRepository = {
     getAllStudents,
     getStudentByDocumentNumberOrEmail,
     createStudent,
     verifyRAExists,
     verifyStudentExistsById,
-    updateStudent
+    updateStudent,
+    disableStudent
 };

@@ -43,3 +43,10 @@ export async function updateStudentService(
     const newDataStudent = await studentRepository.updateStudent(student_id, update);
     return newDataStudent;
 }
+
+export async function deleteStudentService(student_id: number): Promise<void> {
+    const student = await studentRepository.verifyStudentExistsById(student_id);
+    if (!student) throw notFoundError("Student not found!");
+
+    await studentRepository.disableStudent(student_id);
+}

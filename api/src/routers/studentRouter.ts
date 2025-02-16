@@ -1,17 +1,23 @@
 import {
     createStudentController,
+    deleteStudentController,
     getAllStudentsController,
     updateStudentController
 } from "controllers";
 import { Router } from "express";
-import { validateBody } from "middlewares";
-import { createStudentSchema, updateStudentSchema } from "schemas/studentSchema";
+import { validateBody, validateParams, validateQuery } from "middlewares";
+import {
+    createStudentSchema,
+    deleteStudentSchema,
+    updateStudentSchema
+} from "schemas/studentSchema";
 
 const studentRouter = Router();
 
 studentRouter
     .get("/", getAllStudentsController)
     .post("/", validateBody(createStudentSchema), createStudentController)
-    .patch("/", validateBody(updateStudentSchema), updateStudentController);
+    .patch("/", validateBody(updateStudentSchema), updateStudentController)
+    .delete("/", validateQuery(deleteStudentSchema), deleteStudentController);
 
 export { studentRouter };

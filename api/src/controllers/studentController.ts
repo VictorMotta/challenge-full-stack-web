@@ -1,5 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { createStudentService, getAllStudentsService, updateStudentService } from "services";
+import {
+    createStudentService,
+    deleteStudentService,
+    getAllStudentsService,
+    updateStudentService
+} from "services";
 import httpStatus from "http-status";
 
 export async function getAllStudentsController(_req: Request, res: Response, next: NextFunction) {
@@ -37,6 +42,20 @@ export async function updateStudentController(req: Request, res: Response, next:
         const student = await updateStudentService(body);
 
         res.status(httpStatus.OK).json({ student });
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+}
+
+export async function deleteStudentController(req: Request, res: Response, next: NextFunction) {
+    try {
+        const student_id = req.query.student_id;
+        console.log(student_id);
+
+        await deleteStudentService(Number(student_id));
+
+        res.sendStatus(httpStatus.NO_CONTENT);
     } catch (error) {
         console.error(error);
         next(error);
