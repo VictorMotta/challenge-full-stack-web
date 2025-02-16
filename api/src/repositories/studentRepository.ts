@@ -4,7 +4,11 @@ import { internalDatabaseError } from "errors";
 
 async function getAllStudents(): Promise<Students[]> {
     try {
-        const students = await prisma.students.findMany();
+        const students = await prisma.students.findMany({
+            where: {
+                active: true
+            }
+        });
 
         return students;
     } catch (error) {
@@ -104,11 +108,28 @@ async function updateStudent(student_id: number, update: Partial<Students>): Pro
     }
 }
 
+async function disableOrActiveStudent(student_id: number, active: boolean): Promise<void> {
+    try {
+        await prisma.students.update({
+            where: {
+                id: student_id
+            },
+            data: {
+                active
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        throw internalDatabaseError();
+    }
+}
+
 export const studentRepository = {
     getAllStudents,
     getStudentByDocumentNumberOrEmail,
     createStudent,
     verifyRAExists,
     verifyStudentExistsById,
-    updateStudent
+    updateStudent,
+    disableOrActiveStudent
 };

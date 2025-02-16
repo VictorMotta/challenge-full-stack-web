@@ -2,12 +2,14 @@ import { Request, Response, NextFunction } from "express";
 import {
     getAllStudentsController,
     createStudentController,
-    updateStudentController
+    updateStudentController,
+    deleteStudentController
 } from "../../../src/controllers/studentController";
 import {
     createStudentService,
     getAllStudentsService,
-    updateStudentService
+    updateStudentService,
+    deleteStudentService
 } from "../../../src/services";
 import httpStatus from "http-status";
 
@@ -87,6 +89,27 @@ describe("Student Controller", () => {
             (updateStudentService as jest.Mock).mockRejectedValue(error);
 
             await updateStudentController(req as Request, res as Response, next);
+
+            expect(next).toHaveBeenCalledWith(error);
+        });
+    });
+
+    describe("deleteStudentController", () => {
+        it("should delete a student and return 204 status", async () => {
+            req.query = { student_id: "1" };
+
+            await deleteStudentController(req as Request, res as Response, next);
+
+            expect(deleteStudentService).toHaveBeenCalledWith(1);
+            expect(res.sendStatus).toHaveBeenCalledWith(httpStatus.NO_CONTENT);
+        });
+
+        it("should handle errors", async () => {
+            const error = new Error("Something went wrong");
+            req.query = { student_id: "1" };
+            (deleteStudentService as jest.Mock).mockRejectedValue(error);
+
+            await deleteStudentController(req as Request, res as Response, next);
 
             expect(next).toHaveBeenCalledWith(error);
         });

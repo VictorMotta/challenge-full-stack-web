@@ -52,6 +52,7 @@ model Students {
   email               String        @unique @db.VarChar(255)
   registration_number String        @unique @db.VarChar(20)
   document_number     String        @unique @db.VarChar(14)
+  active              Boolean       @default(true)
   created_at          DateTime      @default(now())
   updated_at          DateTime      @updatedAt
   enrollments         Enrollments[]

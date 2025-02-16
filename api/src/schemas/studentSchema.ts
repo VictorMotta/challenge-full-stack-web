@@ -20,3 +20,7 @@ export const updateStudentSchema = Joi.object<UpdateStudentSchemaType>({
         email: Joi.string().email().required()
     })
 });
+
+export const deleteStudentSchema = Joi.object({
+    student_id: Joi.number().required()
+});
