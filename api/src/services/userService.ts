@@ -1,4 +1,4 @@
-import { RolesNames } from "@prisma/client";
+import { RolesNames, Users } from "@prisma/client";
 import { conflictError, invalidCredentialsError } from "errors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -41,4 +41,11 @@ export async function signInUserService(user: SignInUserReqType): Promise<SignIn
     delete userData.password;
 
     return { user: userData, token };
+}
+
+export async function getUserService(id: number): Promise<Users> {
+    const user = await userRepository.getUserById(id);
+    if (!user) throw notFoundError("User not found");
+
+    return user;
 }
