@@ -1,9 +1,9 @@
 on:
   workflow_dispatch:  # Permite executar manualmente pelo GitHub Actions
-  
+
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: [self-hosted, production]
     timeout-minutes: 10
     steps:
       - name: Checkout
