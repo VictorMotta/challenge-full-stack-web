@@ -9,6 +9,43 @@ services:
       - ./api/.env
     volumes:
       - postgres-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    container_name: api
+    build: ./api
+    ports:
+      - 4000:4000
+    depends_on:
+      db:
+        condition: service_healthy  
+    env_file:
+      - ./api/.env
+
+  spa:
+    container_name: vite
+    build: ./app
+    volumes:
+      - vite-volume:/var/www/html
+
+  nginx:
+    container_name: nginx_app
+    build: ./nginx
+    ports:
+      - 8080:80
+      - 80:80
+      - 443:443
+    volumes:
+      - vite-volume:/var/www/html
+    depends_on:
+      - db
+      - api
+      - spa
 
 volumes:
   postgres-volume:
+  vite-volume:
