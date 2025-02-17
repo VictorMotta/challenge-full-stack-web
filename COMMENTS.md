@@ -80,4 +80,6 @@ Caso houvesse mais tempo disponível para desenvolvimento, eu implementaria as s
 -   Melhorias na interface e na responsividade do site.
 -   Configuração do **CD** para o ambiente de produção.
 -   Implementação de novos **testes de integração**, garantindo maior segurança e prevenção de erros na API.
+-   Implementar o modo escuro no front-end.
+-   Adicionar suporte a múltiplos idiomas.
 
