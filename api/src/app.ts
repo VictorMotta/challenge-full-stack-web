@@ -3,7 +3,7 @@ import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors";
 import { loadEnv, connectDb, disconnectDB } from "./config";
 import { handleApplicationErrors } from "middlewares";
-import { studentRouter } from "routers";
+import { studentRouter, usersRouter } from "routers";
 
 loadEnv();
 
@@ -15,6 +15,7 @@ app.use(cors())
         res.send("OK!");
     })
     .use("/student", studentRouter)
+    .use("/user", usersRouter)
     .use((err: Error, req: Request, res: Response, next: NextFunction) => {
         handleApplicationErrors(err, req, res, next);
     });

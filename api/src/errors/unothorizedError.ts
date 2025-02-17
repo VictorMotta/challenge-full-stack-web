@@ -1,8 +1,8 @@
-import { ApplicationError } from "../protocols/types";
+import { ApplicationError } from "../protocols/applicationTypes";
 
 export function unauthorizedError(): ApplicationError {
-	return {
-		name: "UnauthorizedError",
-		message: "Token is invalid or expired",
-	};
+    return {
+        name: "UnauthorizedError",
+        message: "Token is invalid or expired"
+    };
 }

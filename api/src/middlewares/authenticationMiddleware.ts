@@ -21,9 +21,10 @@ export async function authenticateToken(
     if (!token) return generateUnauthorizedResponse(res);
 
     try {
-        const { userId } = jwt.verify(token, process.env.JWT_SECRET) as JWTPayload;
+        const { userId, role } = jwt.verify(token, process.env.JWT_SECRET) as JWTPayload;
 
         req.userId = userId;
+        req.role = role;
 
         return next();
     } catch (err) {
@@ -39,4 +40,5 @@ export type AuthenticatedRequest = Request & JWTPayload;
 
 type JWTPayload = {
     userId: number;
+    role: string;
 };
