@@ -6,7 +6,7 @@ import {
 } from "../../../src/controllers/userController";
 import { createUserService, getUserService, signInUserService } from "../../../src/services";
 import httpStatus from "http-status";
-import { AuthenticatedRequest } from "../../../src/middlewares/authenticationMiddleware";
+import { AuthenticatedRequest } from "../../../src/protocols/authenticationTypes";
 
 jest.mock("../../../src/services");
 
