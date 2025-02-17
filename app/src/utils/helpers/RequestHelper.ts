@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
@@ -14,6 +15,7 @@ export namespace RequestHelper {
       url: string;
       method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
       data?: unknown;
+      headers?: Record<string, string>; // Adicionamos headers personalizados
     };
 
     export type Response<T> =
@@ -34,16 +36,23 @@ export class RequestHelper implements RequestHelperInterface {
   async make<T>(
     params: RequestHelper.Make.Params
   ): Promise<RequestHelper.Make.Response<T>> {
-    const { url, method, data } = params;
+    const { url, method, data, headers = {} } = params;
     const fullUrl = `${BASE_URL}${url}`;
 
-    console.log(fullUrl);
+    console.log(`Request: ${method} ${fullUrl}`);
+
+    const authStore = useAuthStore();
+    const token = authStore.token;
 
     try {
       const response = await axios.request({
         url: fullUrl,
         method,
-        data
+        data,
+        headers: {
+          ...headers,
+          Authorization: token ? `Bearer ${token}` : ""
+        }
       });
 
       return { statusCode: response.status, body: response.data };

@@ -12,9 +12,13 @@ import App from "./App.vue";
 
 // Composables
 import { createApp } from "vue";
+import { useAuthStore } from "./stores/useAuthStore";
 
 const app = createApp(App);
 
 registerPlugins(app);
 
 app.mount("#app");
+
+const authStore = useAuthStore();
+authStore.hydrate();

@@ -17,6 +17,17 @@ import { AuthenticatedRequest } from "protocols/authenticationTypes";
 jest.mock("../../../src/services");
 
 describe("Student Controller", () => {
+    beforeEach(() => {
+        req = {
+            role: "admin" // 🔹 Garante que a role esteja definida
+        };
+        res = {
+            json: jest.fn(),
+            sendStatus: jest.fn(),
+            status: jest.fn().mockReturnThis()
+        };
+        next = jest.fn();
+    });
     let req: Partial<AuthenticatedRequest>;
     let res: Partial<Response>;
     let next: NextFunction;

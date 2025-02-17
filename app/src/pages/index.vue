@@ -82,8 +82,8 @@
 <script lang="ts">
 import { onMounted, ref } from "vue";
 import TitlePage from "../components/TitlePage.vue";
-import { useStudentsStore } from "../stores/studentsStore";
-import { useNotificationStore } from "../stores/notificationStore";
+import { useStudentsStore } from "../stores/useStudentsStore";
+import { useNotificationStore } from "../stores/useNotificationStore";
 import DialogDeleteStudent from "../components/DialogDeleteStudent.vue";
 import { useRouter } from "vue-router";
 
@@ -96,6 +96,7 @@ export default {
     const router = useRouter();
     const showDialogDelete = ref(false);
     const selectedStudentId = ref<number>(0);
+    const notificationStore = useNotificationStore();
 
     onMounted(() => {
       searchQuery.value = "";
@@ -107,8 +108,6 @@ export default {
       selectedStudentId.value = studentId;
       showDialogDelete.value = !showDialogDelete.value;
     };
-
-    const notificationStore = useNotificationStore();
 
     const searchStudents = () => {
       studentsStore.search = searchQuery.value;
@@ -157,3 +156,8 @@ export default {
   margin-top: 22px;
 }
 </style>
+
+<route lang="yaml">
+meta:
+  layout: default
+</route>

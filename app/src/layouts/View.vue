@@ -14,6 +14,17 @@
           </v-list-item>
         </router-link>
       </v-list>
+
+      <div class="box-logout">
+        <v-btn
+          @click="logout"
+          variant="elevated"
+          color="primary"
+          class="logout-btn"
+        >
+          Logout
+        </v-btn>
+      </div>
     </v-navigation-drawer>
 
     <v-app-bar>
@@ -27,23 +38,42 @@
 </template>
 
 <script lang="ts">
+import { useAuthStore } from "../stores/useAuthStore";
 import { defineComponent } from "vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "View",
   data() {
     return {
       drawer: false,
-      items: [
-        { to: "/", text: "Alunos", icon: "mdi-clock" },
-        { to: "/coursers", text: "Cursos", icon: "mdi-account" }
-      ]
+      items: [{ to: "/", text: "Alunos", icon: "mdi-clock" }]
     };
+  },
+  setup() {
+    const authStore = useAuthStore();
+    const router = useRouter();
+    const logout = () => {
+      authStore.logout();
+      router.push("/sign-in");
+    };
+
+    return { logout };
   }
 });
 </script>
 
 <style scoped>
+.box-logout {
+  width: 100%;
+  height: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+.logout-btn {
+  width: 80%;
+}
 .box-logo {
   width: 100%;
   display: flex;
@@ -68,6 +98,9 @@ a {
   align-items: center;
   font-size: 15px;
   font-weight: bold;
+}
+.box-menu {
+  text-align: center;
 }
 .box-menu:hover {
   background-color: #e4e4e4;

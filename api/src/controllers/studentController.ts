@@ -30,10 +30,11 @@ export async function createStudentController(
     next: NextFunction
 ) {
     try {
-        const role = req.role;
-        if (role !== "admin") {
+        const role = req.role || ""; // 🔹 Garante que role nunca seja undefined
+        if (role.toLowerCase() !== "admin") {
             throw unauthorizedError();
         }
+
         const body = req.body;
 
         await createStudentService(body);
@@ -51,10 +52,11 @@ export async function updateStudentController(
     next: NextFunction
 ) {
     try {
-        const role = req.role;
-        if (role !== "admin") {
+        const role = req.role || ""; // 🔹 Garante que role nunca seja undefined
+        if (role.toLowerCase() !== "admin") {
             throw unauthorizedError();
         }
+
         const body = req.body;
 
         const student = await updateStudentService(body);
@@ -72,10 +74,11 @@ export async function deleteStudentController(
     next: NextFunction
 ) {
     try {
-        const role = req.role;
-        if (role !== "admin") {
+        const role = req.role || ""; // 🔹 Garante que role nunca seja undefined
+        if (role.toLowerCase() !== "admin") {
             throw unauthorizedError();
         }
+
         const student_id = req.query.student_id;
 
         await deleteStudentService(Number(student_id));
