@@ -6,6 +6,8 @@ import {
     updateStudentService
 } from "services";
 import httpStatus from "http-status";
+import { AuthenticatedRequest } from "protocols/authenticationTypes";
+import { unauthorizedError } from "errors";
 
 export async function getAllStudentsController(_req: Request, res: Response, next: NextFunction) {
     try {
@@ -22,8 +24,16 @@ export async function getAllStudentsController(_req: Request, res: Response, nex
     }
 }
 
-export async function createStudentController(req: Request, res: Response, next: NextFunction) {
+export async function createStudentController(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+) {
     try {
+        const role = req.role;
+        if (role !== "admin") {
+            throw unauthorizedError();
+        }
         const body = req.body;
 
         await createStudentService(body);
@@ -35,8 +45,16 @@ export async function createStudentController(req: Request, res: Response, next:
     }
 }
 
-export async function updateStudentController(req: Request, res: Response, next: NextFunction) {
+export async function updateStudentController(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+) {
     try {
+        const role = req.role;
+        if (role !== "admin") {
+            throw unauthorizedError();
+        }
         const body = req.body;
 
         const student = await updateStudentService(body);
@@ -48,8 +66,16 @@ export async function updateStudentController(req: Request, res: Response, next:
     }
 }
 
-export async function deleteStudentController(req: Request, res: Response, next: NextFunction) {
+export async function deleteStudentController(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+) {
     try {
+        const role = req.role;
+        if (role !== "admin") {
+            throw unauthorizedError();
+        }
         const student_id = req.query.student_id;
 
         await deleteStudentService(Number(student_id));

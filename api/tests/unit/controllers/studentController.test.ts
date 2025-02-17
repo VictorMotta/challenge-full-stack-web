@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import {
     getAllStudentsController,
     createStudentController,
@@ -12,11 +12,12 @@ import {
     deleteStudentService
 } from "../../../src/services";
 import httpStatus from "http-status";
+import { AuthenticatedRequest } from "protocols/authenticationTypes";
 
 jest.mock("../../../src/services");
 
 describe("Student Controller", () => {
-    let req: Partial<Request>;
+    let req: Partial<AuthenticatedRequest>;
     let res: Partial<Response>;
     let next: NextFunction;
 
@@ -35,7 +36,7 @@ describe("Student Controller", () => {
             const students = [{ id: 1, name: "John Doe" }];
             (getAllStudentsService as jest.Mock).mockResolvedValue(students);
 
-            await getAllStudentsController(req as Request, res as Response, next);
+            await getAllStudentsController(req as AuthenticatedRequest, res as Response, next);
 
             expect(getAllStudentsService).toHaveBeenCalled();
             expect(res.json).toHaveBeenCalledWith({ students });
@@ -45,7 +46,7 @@ describe("Student Controller", () => {
             const error = new Error("Something went wrong");
             (getAllStudentsService as jest.Mock).mockRejectedValue(error);
 
-            await getAllStudentsController(req as Request, res as Response, next);
+            await getAllStudentsController(req as AuthenticatedRequest, res as Response, next);
 
             expect(next).toHaveBeenCalledWith(error);
         });
@@ -54,18 +55,25 @@ describe("Student Controller", () => {
     describe("createStudentController", () => {
         it("should create a student and return 201 status", async () => {
             req.body = { name: "Jane Doe" };
+            req.role = "admin";
 
-            await createStudentController(req as Request, res as Response, next);
+            (createStudentService as jest.Mock).mockResolvedValue({ id: 1, name: "Jane Doe" });
+
+            await createStudentController(req as AuthenticatedRequest, res as Response, next);
 
             expect(createStudentService).toHaveBeenCalledWith(req.body);
             expect(res.sendStatus).toHaveBeenCalledWith(httpStatus.CREATED);
         });
 
         it("should handle errors", async () => {
-            const error = new Error("Something went wrong");
+            const error = {
+                name: "UnauthorizedError",
+                message:
+                    "Action not allowed. You lack the necessary permissions to modify this content."
+            };
             (createStudentService as jest.Mock).mockRejectedValue(error);
 
-            await createStudentController(req as Request, res as Response, next);
+            await createStudentController(req as AuthenticatedRequest, res as Response, next);
 
             expect(next).toHaveBeenCalledWith(error);
         });
@@ -74,10 +82,11 @@ describe("Student Controller", () => {
     describe("updateStudentController", () => {
         it("should update a student and return 200 status with the student data", async () => {
             req.body = { id: 1, name: "John Doe Updated" };
+            req.role = "admin";
             const updatedStudent = { id: 1, name: "John Doe Updated" };
             (updateStudentService as jest.Mock).mockResolvedValue(updatedStudent);
 
-            await updateStudentController(req as Request, res as Response, next);
+            await updateStudentController(req as AuthenticatedRequest, res as Response, next);
 
             expect(updateStudentService).toHaveBeenCalledWith(req.body);
             expect(res.status).toHaveBeenCalledWith(httpStatus.OK);
@@ -85,10 +94,15 @@ describe("Student Controller", () => {
         });
 
         it("should handle errors", async () => {
-            const error = new Error("Something went wrong");
+            const error = {
+                name: "UnauthorizedError",
+                message:
+                    "Action not allowed. You lack the necessary permissions to modify this content."
+            };
+
             (updateStudentService as jest.Mock).mockRejectedValue(error);
 
-            await updateStudentController(req as Request, res as Response, next);
+            await updateStudentController(req as AuthenticatedRequest, res as Response, next);
 
             expect(next).toHaveBeenCalledWith(error);
         });
@@ -97,19 +111,24 @@ describe("Student Controller", () => {
     describe("deleteStudentController", () => {
         it("should delete a student and return 204 status", async () => {
             req.query = { student_id: "1" };
+            req.role = "admin";
 
-            await deleteStudentController(req as Request, res as Response, next);
+            await deleteStudentController(req as AuthenticatedRequest, res as Response, next);
 
             expect(deleteStudentService).toHaveBeenCalledWith(1);
             expect(res.sendStatus).toHaveBeenCalledWith(httpStatus.NO_CONTENT);
         });
 
         it("should handle errors", async () => {
-            const error = new Error("Something went wrong");
+            const error = {
+                name: "UnauthorizedError",
+                message:
+                    "Action not allowed. You lack the necessary permissions to modify this content."
+            };
             req.query = { student_id: "1" };
             (deleteStudentService as jest.Mock).mockRejectedValue(error);
 
-            await deleteStudentController(req as Request, res as Response, next);
+            await deleteStudentController(req as AuthenticatedRequest, res as Response, next);
 
             expect(next).toHaveBeenCalledWith(error);
         });

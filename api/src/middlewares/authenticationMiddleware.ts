@@ -1,9 +1,10 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import httpStatus from "http-status";
 import * as jwt from "jsonwebtoken";
 
-import { unauthorizedError } from "errors";
+import { tokenUnauthorizedError } from "errors";
 import { caseInsensitiveObject } from "utils";
+import { AuthenticatedRequest, JWTPayload } from "protocols/authenticationTypes";
 
 export async function authenticateToken(
     req: AuthenticatedRequest,
@@ -33,12 +34,5 @@ export async function authenticateToken(
 }
 
 function generateUnauthorizedResponse(res: Response) {
-    res.status(httpStatus.UNAUTHORIZED).send(unauthorizedError());
+    res.status(httpStatus.UNAUTHORIZED).send(tokenUnauthorizedError());
 }
-
-export type AuthenticatedRequest = Request & JWTPayload;
-
-type JWTPayload = {
-    userId: number;
-    role: string;
-};
