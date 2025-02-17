@@ -32,6 +32,15 @@ A arquitetura do backend foi projetada de forma modular e bem organizada, seguin
 -   **services/**: Contém a lógica de negócios da aplicação, garantindo que os controllers permaneçam enxutos.
 -   **utils/**: Funções auxiliares reutilizáveis em diferentes partes do sistema.
 
+## GIT e CI/CD
+
+No Git, foi adotada uma estratégia de ramificação onde cada **task/história** possui sua própria **branch** dedicada. Além disso, foram definidas duas branches principais:
+
+- **master**: Destinada ao ambiente de produção. Apenas código estável e validado é integrado nela. O deploy para produção (CD) ainda não está automatizado, sendo necessário envio manual.
+- **develop**: Destinada ao ambiente de homologação. Todo código integrado nela é automaticamente disponibilizado no ambiente de homologação acessível em: [http://64.23.236.72/](http://64.23.236.72/)
+
+Foi implementado um **CI (Integração Contínua)** que realiza a execução automática de todos os **testes unitários** antes do merge. Além disso, a pipeline verifica se o **build da aplicação é bem-sucedido**, garantindo que o deploy não seja quebrado por falhas no código. Dessa forma, qualquer problema pode ser identificado e corrigido antes da fusão das branches.
+
 ## Banco de Dados
 
 O schema do banco de dados foi projetado pensando na escalabilidade do projeto. A modelagem segue um padrão relacional bem estruturado, permitindo um gerenciamento eficiente das entidades e relacionamentos. O banco de dados utiliza **PostgreSQL**, e o Prisma foi escolhido como ORM para facilitar a interação com os dados e evitar vulnerabilidades como SQL Injection.
