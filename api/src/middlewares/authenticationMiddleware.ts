@@ -19,10 +19,14 @@ export async function authenticateToken(
     if (!authHeader) return generateUnauthorizedResponse(res);
 
     const token = authHeader.split(" ")[1];
+    console.log("token");
+    console.log(token);
+    console.log("enviou isso tudo");
     if (!token) return generateUnauthorizedResponse(res);
 
     try {
         const { userId, role } = jwt.verify(token, process.env.JWT_SECRET) as JWTPayload;
+        console.log(role);
 
         req.userId = userId;
         req.role = role;

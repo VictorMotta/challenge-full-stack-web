@@ -31,7 +31,8 @@ export async function createStudentController(
 ) {
     try {
         const role = req.role;
-        if (role !== "admin") {
+
+        if (role.toLocaleLowerCase() !== "admin") {
             throw unauthorizedError();
         }
         const body = req.body;
@@ -52,7 +53,7 @@ export async function updateStudentController(
 ) {
     try {
         const role = req.role;
-        if (role !== "admin") {
+        if (role.toLocaleLowerCase() !== "admin") {
             throw unauthorizedError();
         }
         const body = req.body;
@@ -73,7 +74,8 @@ export async function deleteStudentController(
 ) {
     try {
         const role = req.role;
-        if (role !== "admin") {
+        console.log("chegou controller");
+        if (role.toLocaleLowerCase() !== "admin") {
             throw unauthorizedError();
         }
         const student_id = req.query.student_id;
