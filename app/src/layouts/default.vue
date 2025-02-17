@@ -5,5 +5,5 @@
 </template>
 
 <script lang="ts" setup>
-import View from "./View.vue";
+import View from "../layouts/View.vue";
 </script>

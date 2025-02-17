@@ -60,8 +60,8 @@
 <script>
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useNotificationStore } from "../stores/notificationStore";
-import { useStudentsStore } from "../stores/studentsStore";
+import { useNotificationStore } from "../stores/useNotificationStore";
+import { useStudentsStore } from "../stores/useStudentsStore";
 
 export default {
   name: "UpsertStudent",
@@ -173,3 +173,8 @@ export default {
   justify-content: end;
 }
 </style>
+
+<route lang="yaml">
+meta:
+  layout: default
+</route>

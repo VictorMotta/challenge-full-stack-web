@@ -3,7 +3,7 @@ import { GetRecentBalanceService } from "@/services/students/getAllStudentsServi
 import type { GetAllStudentsUseCase } from "@/domain/useCases/students/getAllStudentsUseCase";
 import type { StudentStoreProps } from "@/domain/types/studentsTypes";
 import { CreateStudentService } from "@/services/students/createStudentService";
-import { useNotificationStore } from "./notificationStore";
+import { useNotificationStore } from "./useNotificationStore";
 import { UpdateStudentService } from "@/services/students/updateStudentService";
 import { DeleteStudentService } from "@/services/students/deleteStudentService";
 

@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { useStudentsStore } from "../stores/studentsStore";
+import { useStudentsStore } from "../stores/useStudentsStore";
 import { defineComponent, computed } from "vue";
 
 export default defineComponent({
