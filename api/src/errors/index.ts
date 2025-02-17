@@ -5,3 +5,4 @@ export * from "./invalidCredentialsError";
 export * from "./forbbidenError";
 export * from "./internalDatabaseError";
 export * from "./unauthorizedError";
+export * from "./notFoundError";

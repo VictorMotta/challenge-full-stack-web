@@ -19,6 +19,7 @@ export const useAuthStore = defineStore("auth", {
         localStorage.setItem("token", user.token);
       } catch (error) {
         console.error("Erro ao fazer login:", error);
+        throw error;
       }
     },
     async signup(userData: SignUpUserUseCase.Request): Promise<void> {
@@ -26,6 +27,7 @@ export const useAuthStore = defineStore("auth", {
         await SignUpUserService.instance.perform(userData);
       } catch (error) {
         console.error("Erro ao fazer cadastro:", error);
+        throw error;
       }
     },
     logout() {

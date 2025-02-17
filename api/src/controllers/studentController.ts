@@ -4,10 +4,10 @@ import {
     deleteStudentService,
     getAllStudentsService,
     updateStudentService
-} from "services";
+} from "../services";
 import httpStatus from "http-status";
-import { AuthenticatedRequest } from "protocols/authenticationTypes";
-import { unauthorizedError } from "errors";
+import { AuthenticatedRequest } from "../protocols/authenticationTypes";
+import { unauthorizedError } from "../errors";
 
 export async function getAllStudentsController(_req: Request, res: Response, next: NextFunction) {
     try {

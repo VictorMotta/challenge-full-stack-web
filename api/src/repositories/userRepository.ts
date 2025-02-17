@@ -1,6 +1,6 @@
 import { Users } from "@prisma/client";
-import { prisma } from "config";
-import { internalDatabaseError } from "errors";
+import { prisma } from "../config";
+import { internalDatabaseError } from "../errors";
 
 async function getUserByEmail(email: string): Promise<Users> {
     try {

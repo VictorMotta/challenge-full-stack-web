@@ -1,8 +1,8 @@
-import { createUserController, getUserController, signInUserController } from "controllers";
-import { validateBody, validateParams } from "middlewares";
-import { createUserSchema, signInUserSchema } from "schemas";
+import { createUserController, getUserController, signInUserController } from "../controllers";
+import { validateBody } from "../middlewares";
+import { createUserSchema, signInUserSchema } from "../schemas";
 import { Router } from "express";
-import { authenticateToken } from "middlewares/authenticationMiddleware";
+import { authenticateToken } from "../middlewares/authenticationMiddleware";
 
 const usersRouter = Router();
 

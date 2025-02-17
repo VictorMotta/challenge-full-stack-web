@@ -3,11 +3,11 @@ import {
     deleteStudentController,
     getAllStudentsController,
     updateStudentController
-} from "controllers";
+} from "../controllers";
 import { Router } from "express";
-import { validateBody, validateQuery } from "middlewares";
-import { authenticateToken } from "middlewares/authenticationMiddleware";
-import { createStudentSchema, deleteStudentSchema, updateStudentSchema } from "schemas";
+import { validateBody, validateQuery } from "../middlewares";
+import { authenticateToken } from "../middlewares/authenticationMiddleware";
+import { createStudentSchema, deleteStudentSchema, updateStudentSchema } from "../schemas";
 
 const studentRouter = Router();
 

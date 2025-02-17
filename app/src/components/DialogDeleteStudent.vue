@@ -1,15 +1,15 @@
 <template>
   <div class="text-center pa-4">
     <v-dialog v-model="dialogModel" max-width="400" persistent>
-      <v-card text="Are you want you sure delete this student?">
+      <v-card text="Você tem certeza que gostaria de excluir este estudante??">
         <template v-slot:actions>
           <v-spacer></v-spacer>
 
           <v-btn @click="closeDialog" color="primary" variant="elevated">
-            Disagree
+            Não, cancelar
           </v-btn>
           <v-btn @click="confirmDelete" color="primary" variant="outlined">
-            Agree
+            Sim, eu quero excluir
           </v-btn>
         </template>
       </v-card>

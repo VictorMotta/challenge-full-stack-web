@@ -1,6 +1,6 @@
 import { Students } from "@prisma/client";
 import Joi from "joi";
-import { UpdateStudentSchemaType } from "protocols";
+import { UpdateStudentSchemaType } from "../protocols";
 
 export const createStudentSchema = Joi.object<Partial<Students>>({
     name: Joi.string().required(),

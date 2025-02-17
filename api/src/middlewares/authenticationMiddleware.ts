@@ -2,9 +2,9 @@ import { NextFunction, Response } from "express";
 import httpStatus from "http-status";
 import * as jwt from "jsonwebtoken";
 
-import { tokenUnauthorizedError } from "errors";
-import { caseInsensitiveObject } from "utils";
-import { AuthenticatedRequest, JWTPayload } from "protocols/authenticationTypes";
+import { tokenUnauthorizedError } from "../errors";
+import { caseInsensitiveObject } from "../utils";
+import { AuthenticatedRequest, JWTPayload } from "../protocols/authenticationTypes";
 
 export async function authenticateToken(
     req: AuthenticatedRequest,

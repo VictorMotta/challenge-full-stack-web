@@ -15,9 +15,10 @@ app/.vite/
 app/.eslintrc-auto-import.json
 app/auto-imports.d.ts
 app/components.d.ts
-app/.env*
 app/.env
-api/.env*
+app/.env.development
+app/.env
+api/.env.development
 api/.env
 api/.vscode
 # Runtime data
