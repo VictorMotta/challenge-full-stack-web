@@ -1,127 +1,156 @@
-+A Educação - Full Stack Web Developer
-===================
+# Como Rodar a Plataforma Localmente
 
-[![N|Solid](https://maisaedu.com.br/hubfs/site-grupo-a/logo-mais-a-educacao.svg)](https://maisaedu.com.br/) 
+## **Instalação do Docker** (caso não esteja instalado)
 
-O objetivo deste desafio é avaliar as competências técnicas dos candidatos a desenvolvedor Full Stack Web na Maior Plataforma de Educação do Brasil.
+<details>
+  <summary>Clique aqui para ver como instalar o Docker</summary>
 
-Será solicitado o desenvolvimento de uma Aplicação que realize a Matrícula do Aluno na Turma de Programação Web da instituição Edtech. Regras e requisitos técnicos estão detalhadas neste documento.
+### **Linux**
 
-# Especificações Técnicas
-- **Front-end:**
-  - Framework JS: [Vue.js](https://vuejs.org/)
-  - Framework de UI: [Vuetify](https://vuetifyjs.com/)
-- **API:** NodeJS
-- **Banco de Dados:** Postgress ou MySQL
-- **Idioma de escrita do código:** Inglês
+#### **1. Configurar o repositório do Docker**
 
-# Requisitos
-## Contextualização
-Considere que uma Instituição de Ensino Superior precisa de uma solução para cadastrar e gerenciar matrículas de alunos em turmas online. Para realizar a matrícula, é necessário que o cadastro do aluno tenha sido realizado.
+Execute os seguintes comandos no terminal:
 
-O desafio consiste em criar uma aplicação para o cadastro de alunos conforme os critérios de aceitação.
+```sh
+# Atualizar pacotes e instalar dependências necessárias
+sudo apt-get update
+sudo apt-get install ca-certificates curl
 
-## Mockups de interface
-A seguir, são apresentados alguns mockups de interface como um guia para a criação do front-end. Fique à vontade para usar sua criatividade na criação do front-end.
+# Criar diretório para armazenar a chave do repositório
+sudo install -m 0755 -d /etc/apt/keyrings
 
-* Listagem de Alunos
-![Listagem de Alunos](/mockups/studants_list.png)
+# Adicionar a chave GPG oficial do Docker
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-* Criar/Editar Aluno
-![Listagem de Alunos](/mockups/studants_save.png)
+# Adicionar o repositório do Docker à lista de fontes do Apt
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-## Histórias do Usuário
-- **Sendo** um usuário administrativo da Instituição
-- **Quero** gerenciar cadastros de alunos
-- **Para** que eu possa realizar a matrícula do aluno
+# Atualizar pacotes novamente
+sudo apt-get update
+```
 
-### Critérios de aceite: 
+#### **2. Instalar o Docker**
+Para instalar a versão mais recente do Docker, execute:
 
-#### Cenário: Cadastrar novo aluno
-- **Dado** que estou na tela de Consulta de Alunos
-- **Quando** clico em Cadastrar Aluno
-- **Então** abre a tela de Cadastro do Aluno
-- **E** exibe os campos obrigatórios vazios
-####
-- **Dado** que inseri dados válidos nos campos
-- **Quando** clico em Salvar
-- **Então** cria o novo aluno na base
-- **E** retorna mensagem de sucesso
-####
-- **Dado** que inseri dados válidos nos campos
-- **Quando** clico em Cancelar
-- **Então** retorna para tela Consulta de Alunos
-- **E** não persiste a gravação dos dados no banco 
+```sh
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
 
-#### Cenário: Listar alunos cadastrados 
-- **Dado** que estou no Módulo Acadêmico
-- **Quando** clico no menu Alunos
-- **Então** abre a tela de Consulta de Alunos 
-- **E** exibe opção Cadastrar Aluno ao topo
-- **E** lista dados dos alunos cadastrados
-- **E** exibe opção Editar por aluno
-- **E** exibe opção Excluir por aluno
+Verifique se a instalação foi bem-sucedida:
+```sh
+sudo docker run hello-world
+```
 
-#### Cenário: Editar cadastro de aluno
-- **Dado** que estou na listagem de alunos
-- **Quando** clico em Editar aluno
-- **Então** abre a tela de Cadastro do Aluno 
-- **E** exibe os campos do cadastro preenchidos
-- **E** habilita alteração dos campos editáveis
-####
-- **Dado** que estou na tela de Cadastro do Aluno
-- **Quando** clica em Salvar
-- **Então** grava os dados editáveis na base
-####
-- **Dado** que estou na tela de Cadastro do Aluno
-- **Quando** clica em Cancelar
-- **Então** retorna para a tela de Consulta de Alunos
-- **E** não persiste a gravação dos dados
+#### **3. Executar Docker sem sudo**
 
-#### Cenário: Excluir cadastro de aluno
-- **Dado** que estou na listagem de alunos
-- **Quando** clico em Excluir aluno
-- **Então** exibe a modal de confirmação de exclusão
-####
-- **Dado** que estou na modal de confirmação de exclusão 
-- **Quando** clico em Confirmar
-- **Então** então exclui o registro do aluno
-####
-- **Dado** que estou na modal de confirmação de exclusão
-- **Quando** clico em Cancelar
-- **Então** então fecha a modal e não persiste a exclusão
+Para permitir o uso do Docker sem precisar de `sudo`, siga os passos abaixo:
 
-## Campos obrigatórios:
-- **Nome** (editável)
-- **Email** (editável)
-- **RA** (não editável) (chave única)
-- **CPF** (não editável)
+```sh
+# Criar o grupo docker
+sudo groupadd docker
 
-# Critérios de avaliação
-- Qualidade de escrita do código
-- Organização do projeto
-- Qualidade da API
-- Lógica da solução implementada
-- Qualidade da camada de persistência
-- Utilização do Git (quantidade e descrição dos commits, Git Flow, ...)
-- Validações
-- Tratamento de erros
-- Padrões de projeto e arquitetura
+# Adicionar seu usuário ao grupo docker
+sudo usermod -aG docker $USER
+```
 
-# Desejável
-- Testes de unidade
-- Documentação da arquitetura de solução
+Agora, saia da sessão e faça login novamente para aplicar as mudanças.
 
-# Diferenciais
-- Segurança da aplicação (autenticação, autorização, ...)
+Se estiver rodando o Linux em uma máquina virtual, pode ser necessário reiniciar a VM.
 
-# Instruções de entrega
-1. Crie um fork do repositório no seu GitHub
-2. Faça o push do código desenvolvido no seu Github
-3. Inclua um arquivo chamado COMMENTS.md explicando
-    - Decisão da arquitetura utilizada
-    - Lista de bibliotecas de terceiros utilizadas
-    - O que você melhoraria se tivesse mais tempo
-    - Quais requisitos obrigatórios que não foram entregues
-4. Informe ao recrutador quando concluir o desafio junto com o link do repositório
-5. Após revisão do projeto junto com a equipe de desevolvimento deixe seu repositório privado
+Caso queira aplicar as mudanças imediatamente sem reiniciar, execute:
+
+```sh
+newgrp docker
+```
+
+Para testar se o Docker pode ser executado sem `sudo`:
+
+```sh
+docker run hello-world
+```
+
+### **Windows**
+
+Baixe e instale o **Docker Desktop**:
+[Download Docker para Windows](https://www.docker.com/products/docker-desktop/)
+
+Após a instalação, reinicie o computador e verifique a versão:
+```sh
+docker --version
+```
+
+### **MacOS**
+
+Baixe e instale o **Docker Desktop**:
+[Download Docker para Mac](https://www.docker.com/products/docker-desktop/)
+
+Após a instalação, verifique a versão:
+```sh
+docker --version
+```
+</details>
+
+---
+
+## **Rodando a API**
+
+### **1. Configurar variáveis de ambiente**
+
+Acesse a pasta da API:
+```sh
+cd api
+```
+Copie o arquivo `.env.example` para `.env`:
+```sh
+cp .env.example .env
+```
+Edite o arquivo `.env` e configure os valores necessários, como a conexão com o banco de dados.
+
+Volte para a raiz do projeto:
+```sh
+cd ..
+```
+Agora, entre na pasta do aplicativo:
+```sh
+cd app
+```
+Copie o arquivo `.env.example` para `.env`:
+```sh
+cp .env.example .env
+```
+Edite o arquivo `.env` e configure os valores necessários.
+
+Volte novamente para a raiz do projeto:
+```sh
+cd ..
+```
+
+---
+
+### **2. Subir os contêineres da aplicação**
+Para iniciar a API com **Docker Compose**, execute o seguinte comando:
+```sh
+docker compose up --build -d
+```
+- O `--build` garante que a aplicação seja reconstruída com base nas alterações mais recentes.
+- O `-d` executa os contêineres em segundo plano (modo "detached").
+
+---
+
+### **3. Parar a aplicação**
+Para parar e remover os contêineres e volumes criados:
+```sh
+docker compose down -v
+```
+- O `-v` remove os volumes associados aos contêineres para evitar dados residuais.
+
+---
+
+Agora sua API está pronta para ser usada! 🚀
+
+Você pode testá-la acessando: [http://64.23.236.72/](http://64.23.236.72/)
+
