@@ -102,6 +102,9 @@ a {
   font-size: 15px;
   font-weight: bold;
 }
+.box-menu {
+  text-align: center;
+}
 .box-menu:hover {
   background-color: #e4e4e4;
 }

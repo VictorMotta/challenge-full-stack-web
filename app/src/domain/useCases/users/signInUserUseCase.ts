@@ -1,8 +1,8 @@
-export interface SignUserUseCase {
-  perform(body: SignUserUseCase.Request): Promise<SignUserUseCase.Response>;
+export interface SignInUserUseCase {
+  perform(body: SignInUserUseCase.Request): Promise<SignInUserUseCase.Response>;
 }
 
-export namespace SignUserUseCase {
+export namespace SignInUserUseCase {
   export type User = {
     id: number;
     name: string;

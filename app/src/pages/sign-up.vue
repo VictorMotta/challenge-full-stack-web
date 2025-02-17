@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <v-card class="mx-auto">
-      <v-toolbar color="primary" dark flat>
-        <v-card-title class="text-h6 font-weight-regular">
-          Criar Conta
-        </v-card-title>
+    <v-card class="mx-auto sign-up-card">
+      <v-toolbar color="primary" dark flat class="toolbar-centered">
+        <v-card-title class="text-h6 font-weight-regular"
+          >Criar Conta</v-card-title
+        >
       </v-toolbar>
 
       <v-form ref="form" v-model="isValid" class="pa-4 pt-6">
@@ -12,8 +12,10 @@
           v-model="name"
           color="deep-purple"
           label="Nome"
-          type="email"
+          type="text"
           variant="filled"
+          required
+          style="width: 100%"
         ></v-text-field>
 
         <v-text-field
@@ -22,6 +24,8 @@
           label="E-mail"
           type="email"
           variant="filled"
+          required
+          style="width: 100%"
         ></v-text-field>
 
         <v-text-field
@@ -31,7 +35,18 @@
           label="Senha"
           type="password"
           variant="filled"
+          required
+          style="width: 100%"
         ></v-text-field>
+        <v-select
+          v-model="role"
+          :items="roles"
+          label="Escolha um tipo de conta"
+          color="deep-purple"
+          variant="filled"
+          required
+          style="width: 100%"
+        ></v-select>
       </v-form>
 
       <v-divider></v-divider>
@@ -42,14 +57,14 @@
           :loading="isLoading"
           color="primary"
           variant="elevated"
-          @click="handleLogin"
+          @click="handleSignUp"
         >
-          Criar
+          Criar Conta
         </v-btn>
       </div>
 
       <div class="container-button">
-        <p>Já é um usuário?</p>
+        <p>Já tem uma conta?</p>
         <router-link to="/sign-in" class="sign-up-link"
           >Clique aqui</router-link
         >
@@ -74,38 +89,56 @@ import { useNotificationStore } from "../stores/useNotificationStore";
 
 export default {
   setup() {
-    const email = ref("");
     const name = ref("");
+    const email = ref("");
     const password = ref("");
+    const role = ref("");
+    const roles = ["Teacher", "Admin"];
+
     const isValid = ref(false);
     const isLoading = ref(false);
     const authStore = useAuthStore();
     const router = useRouter();
     const notificationStore = useNotificationStore();
 
-    const handleLogin = async () => {
-      isLoading.value = true;
-      try {
-        await authStore.sigin({ email: email.value, password: password.value });
-        router.push("/");
-        notificationStore.showNotification("Logado com sucesso!", "success");
-      } catch (error) {
+    const handleSignUp = async () => {
+      if (!name.value || !email.value || !password.value || !role.value) {
         notificationStore.showNotification(
-          "Falha ao tentar se logar!",
+          "Preencha todos os campos!",
           "error"
         );
+        return;
+      }
+
+      isLoading.value = true;
+      try {
+        authStore.signup({
+          name: name.value,
+          email: email.value,
+          password: password.value,
+          role: role.value.toLocaleLowerCase() as "teacher" | "admin"
+        });
+        notificationStore.showNotification(
+          "Usuário criado com sucesso!",
+          "success"
+        );
+        router.push("/sign-in");
+      } catch (error) {
+        notificationStore.showNotification("Erro ao criar conta!", "error");
       } finally {
         isLoading.value = false;
       }
     };
 
     return {
-      email,
       name,
+      email,
       password,
+      role,
+      roles,
       isValid,
       isLoading,
-      handleLogin,
+      handleSignUp,
       notificationStore
     };
   }
@@ -118,7 +151,6 @@ export default {
   justify-content: center;
   text-align: center;
 }
-
 .container {
   height: 100vh;
   display: flex;
@@ -126,9 +158,13 @@ export default {
   align-items: center;
   background-color: #f5f5f5;
 }
-.v-card {
-  min-width: 400px;
+.sign-up-card {
+  width: 100%;
+  max-width: 420px;
+  min-height: 500px;
   border: 1px solid #e4e4e4;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  background: white;
 }
 .v-btn {
   width: 80%;

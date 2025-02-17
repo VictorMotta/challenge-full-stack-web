@@ -1,15 +1,15 @@
 import { RequestHelper } from "@/utils/helpers/RequestHelper";
-import type { SignUserUseCase } from "@/domain/useCases/users/signUserUseCase";
+import type { SignInUserUseCase } from "@/domain/useCases/users/signInUserUseCase";
 
-export class SignInUserService implements SignUserUseCase {
+export class SignInUserService implements SignInUserUseCase {
   static instance = new SignInUserService();
 
   constructor(private readonly requestHelper = RequestHelper.instance) {}
 
   async perform(
-    body: SignUserUseCase.Request
-  ): Promise<SignUserUseCase.Response> {
-    const response = await this.requestHelper.make<SignUserUseCase.Response>({
+    body: SignInUserUseCase.Request
+  ): Promise<SignInUserUseCase.Response> {
+    const response = await this.requestHelper.make<SignInUserUseCase.Response>({
       method: "POST",
       url: `/user/sign-in`,
       data: body

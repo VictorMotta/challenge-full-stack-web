@@ -14,6 +14,7 @@
           label="Email address"
           type="email"
           variant="filled"
+          style="width: 100%"
         ></v-text-field>
 
         <v-text-field
@@ -23,6 +24,7 @@
           label="Password"
           type="password"
           variant="filled"
+          style="width: 100%"
         ></v-text-field>
       </v-form>
 
@@ -77,7 +79,10 @@ export default {
     const handleLogin = async () => {
       isLoading.value = true;
       try {
-        await authStore.sigin({ email: email.value, password: password.value });
+        await authStore.signin({
+          email: email.value,
+          password: password.value
+        });
         router.push("/");
         notificationStore.showNotification("Logado com sucesso!", "success");
       } catch (error) {
