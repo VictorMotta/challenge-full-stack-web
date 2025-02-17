@@ -15,7 +15,7 @@
       />
       <v-btn @click="searchStudents"> Pesquisar </v-btn>
     </div>
-    <v-btn class="mr-5" @click="navigateManageStudents">
+    <v-btn class="mr-5" @click="navigateManageStudents" :disabled="!isAdmin">
       Cadastrar Aluno
     </v-btn>
   </div>
@@ -51,6 +51,7 @@
             color="primary"
             icon="mdi-dots-vertical"
             variant="text"
+            :disabled="!isAdmin"
           ></v-btn>
         </template>
         <v-list>
@@ -86,6 +87,7 @@ import { useStudentsStore } from "../stores/useStudentsStore";
 import { useNotificationStore } from "../stores/useNotificationStore";
 import DialogDeleteStudent from "../components/DialogDeleteStudent.vue";
 import { useRouter } from "vue-router";
+import { useAuthStore } from "../stores/useAuthStore";
 
 export default {
   name: "Index",
@@ -97,6 +99,8 @@ export default {
     const showDialogDelete = ref(false);
     const selectedStudentId = ref<number>(0);
     const notificationStore = useNotificationStore();
+    const authStore = useAuthStore();
+    const isAdmin = authStore.user.role.toLowerCase() === "admin";
 
     onMounted(() => {
       searchQuery.value = "";
@@ -132,7 +136,9 @@ export default {
       editStudent,
       showDialogDelete,
       selectedStudentId,
-      toggleDialogDelete
+      toggleDialogDelete,
+      authStore,
+      isAdmin
     };
   }
 };
