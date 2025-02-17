@@ -47,10 +47,7 @@ export default defineComponent({
   data() {
     return {
       drawer: false,
-      items: [
-        { to: "/", text: "Alunos", icon: "mdi-clock" },
-        { to: "/coursers", text: "Cursos", icon: "mdi-account" }
-      ]
+      items: [{ to: "/", text: "Alunos", icon: "mdi-clock" }]
     };
   },
   setup() {
