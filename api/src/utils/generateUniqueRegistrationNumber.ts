@@ -1,4 +1,4 @@
-import { studentRepository } from "repositories";
+import { studentRepository } from "../repositories";
 
 export async function generateUniqueRegistrationNumber(): Promise<string> {
     const prefix = "RN";

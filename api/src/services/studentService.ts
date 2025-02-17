@@ -1,9 +1,8 @@
 import { Students } from "@prisma/client";
-import { conflictError } from "errors";
-import { notFoundError } from "errors/notFoundError";
-import { UpdateStudentSchemaType } from "protocols";
-import { studentRepository } from "repositories";
-import { generateUniqueRegistrationNumber } from "utils";
+import { conflictError, notFoundError } from "../errors";
+import { UpdateStudentSchemaType } from "../protocols";
+import { studentRepository } from "../repositories";
+import { generateUniqueRegistrationNumber } from "../utils";
 
 export async function getAllStudentsService(): Promise<Students[]> {
     const students = await studentRepository.getAllStudents();

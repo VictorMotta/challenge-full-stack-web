@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { CreateUserReqType, SignInUserReqType } from "protocols/userTypes";
-import { createUserService, getUserService, signInUserService } from "services";
+import { CreateUserReqType, SignInUserReqType } from "../protocols/userTypes";
+import { createUserService, getUserService, signInUserService } from "../services";
 import httpStatus from "http-status";
-import { AuthenticatedRequest } from "protocols/authenticationTypes";
+import { AuthenticatedRequest } from "../protocols/authenticationTypes";
 
 export async function createUserController(req: Request, res: Response, next: NextFunction) {
     const user = req.body as CreateUserReqType;

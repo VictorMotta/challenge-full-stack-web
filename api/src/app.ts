@@ -2,8 +2,8 @@ import "express-async-errors";
 import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors";
 import { loadEnv, connectDb, disconnectDB } from "./config";
-import { handleApplicationErrors } from "middlewares";
-import { studentRouter, usersRouter } from "routers";
+import { handleApplicationErrors } from "./middlewares";
+import { studentRouter, usersRouter } from "./routers";
 
 loadEnv();
 

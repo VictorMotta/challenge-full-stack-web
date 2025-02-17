@@ -1,84 +1,86 @@
 <template>
-  <div class="container">
-    <v-card class="mx-auto sign-up-card">
-      <v-toolbar color="primary" dark flat class="toolbar-centered">
-        <v-card-title class="text-h6 font-weight-regular"
-          >Criar Conta</v-card-title
-        >
-      </v-toolbar>
+  <div class="main-container">
+    <div class="container">
+      <v-card class="mx-auto sign-up-card">
+        <v-toolbar color="primary" dark flat class="toolbar-centered">
+          <v-card-title class="text-h6 font-weight-regular"
+            >Criar Conta</v-card-title
+          >
+        </v-toolbar>
 
-      <v-form ref="form" v-model="isValid" class="pa-4 pt-6">
-        <v-text-field
-          v-model="name"
-          color="deep-purple"
-          label="Nome"
-          type="text"
-          variant="filled"
-          required
-          style="width: 100%"
-        ></v-text-field>
+        <v-form ref="form" v-model="isValid" class="pa-4 pt-6">
+          <v-text-field
+            v-model="name"
+            color="deep-purple"
+            label="Nome"
+            type="text"
+            variant="filled"
+            required
+            style="width: 100%"
+          ></v-text-field>
 
-        <v-text-field
-          v-model="email"
-          color="deep-purple"
-          label="E-mail"
-          type="email"
-          variant="filled"
-          required
-          style="width: 100%"
-        ></v-text-field>
+          <v-text-field
+            v-model="email"
+            color="deep-purple"
+            label="E-mail"
+            type="email"
+            variant="filled"
+            required
+            style="width: 100%"
+          ></v-text-field>
 
-        <v-text-field
-          v-model="password"
-          color="deep-purple"
-          counter="6"
-          label="Senha"
-          type="password"
-          variant="filled"
-          required
-          style="width: 100%"
-        ></v-text-field>
-        <v-select
-          v-model="role"
-          :items="roles"
-          label="Escolha um tipo de conta"
-          color="deep-purple"
-          variant="filled"
-          required
-          style="width: 100%"
-        ></v-select>
-      </v-form>
+          <v-text-field
+            v-model="password"
+            color="deep-purple"
+            counter="6"
+            label="Senha"
+            type="password"
+            variant="filled"
+            required
+            style="width: 100%"
+          ></v-text-field>
+          <v-select
+            v-model="role"
+            :items="roles"
+            label="Escolha um tipo de conta"
+            color="deep-purple"
+            variant="filled"
+            required
+            style="width: 100%"
+          ></v-select>
+        </v-form>
 
-      <v-divider></v-divider>
+        <v-divider></v-divider>
 
-      <div class="container-button">
-        <v-btn
-          :disabled="!isValid || isLoading"
-          :loading="isLoading"
-          color="primary"
-          variant="elevated"
-          @click="handleSignUp"
-        >
-          Criar Conta
-        </v-btn>
-      </div>
+        <div class="container-button">
+          <v-btn
+            :disabled="!isValid || isLoading"
+            :loading="isLoading"
+            color="primary"
+            variant="elevated"
+            @click="handleSignUp"
+          >
+            Criar Conta
+          </v-btn>
+        </div>
 
-      <div class="container-button">
-        <p>Já tem uma conta?</p>
-        <router-link to="/sign-in" class="sign-up-link"
-          >Clique aqui</router-link
-        >
-      </div>
-    </v-card>
+        <div class="container-button">
+          <p>Já tem uma conta?</p>
+          <router-link to="/sign-in" class="sign-up-link"
+            >Clique aqui</router-link
+          >
+        </div>
+      </v-card>
+    </div>
+
+    <v-snackbar
+      v-model="notificationStore.showSnackbar"
+      :color="notificationStore.color"
+      :timeout="3000"
+    >
+      {{ notificationStore.message }}
+    </v-snackbar>
   </div>
-
-  <v-snackbar
-    v-model="notificationStore.showSnackbar"
-    :color="notificationStore.color"
-    :timeout="3000"
-  >
-    {{ notificationStore.message }}
-  </v-snackbar>
 </template>
 
 <script lang="ts">
@@ -111,8 +113,15 @@ export default {
       }
 
       isLoading.value = true;
+      console.log("Enviando dados para API:", {
+        name: name.value,
+        email: email.value,
+        password: password.value,
+        role: role.value.toLocaleLowerCase() as "teacher" | "admin"
+      });
+
       try {
-        authStore.signup({
+        await authStore.signup({
           name: name.value,
           email: email.value,
           password: password.value,
@@ -146,6 +155,9 @@ export default {
 </script>
 
 <style scoped>
+.main-container {
+  width: 100%;
+}
 .toolbar-centered {
   display: flex;
   justify-content: center;

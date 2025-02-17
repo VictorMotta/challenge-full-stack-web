@@ -1,63 +1,65 @@
 <template>
-  <div class="container">
-    <v-card class="mx-auto">
-      <v-toolbar color="primary" dark flat>
-        <v-card-title class="text-h6 font-weight-regular">
-          Fazer Login
-        </v-card-title>
-      </v-toolbar>
+  <div>
+    <div class="container">
+      <v-card class="mx-auto">
+        <v-toolbar color="primary" dark flat>
+          <v-card-title class="text-h6 font-weight-regular">
+            Fazer Login
+          </v-card-title>
+        </v-toolbar>
 
-      <v-form ref="form" v-model="isValid" class="pa-4 pt-6">
-        <v-text-field
-          v-model="email"
-          color="deep-purple"
-          label="Email address"
-          type="email"
-          variant="filled"
-          style="width: 100%"
-        ></v-text-field>
+        <v-form ref="form" v-model="isValid" class="pa-4 pt-6">
+          <v-text-field
+            v-model="email"
+            color="deep-purple"
+            label="Email address"
+            type="email"
+            variant="filled"
+            style="width: 100%"
+          ></v-text-field>
 
-        <v-text-field
-          v-model="password"
-          color="deep-purple"
-          counter="6"
-          label="Password"
-          type="password"
-          variant="filled"
-          style="width: 100%"
-        ></v-text-field>
-      </v-form>
+          <v-text-field
+            v-model="password"
+            color="deep-purple"
+            counter="6"
+            label="Password"
+            type="password"
+            variant="filled"
+            style="width: 100%"
+          ></v-text-field>
+        </v-form>
 
-      <v-divider></v-divider>
+        <v-divider></v-divider>
 
-      <div class="container-button">
-        <v-btn
-          :disabled="!isValid || isLoading"
-          :loading="isLoading"
-          color="primary"
-          variant="elevated"
-          @click="handleLogin"
-        >
-          Entrar
-        </v-btn>
-      </div>
+        <div class="container-button">
+          <v-btn
+            :disabled="!isValid || isLoading"
+            :loading="isLoading"
+            color="primary"
+            variant="elevated"
+            @click="handleLogin"
+          >
+            Entrar
+          </v-btn>
+        </div>
 
-      <div class="container-button">
-        <p>Não é um usuário ainda?</p>
-        <router-link to="/sign-up" class="sign-up-link"
-          >Clique aqui</router-link
-        >
-      </div>
-    </v-card>
+        <div class="container-button">
+          <p>Não é um usuário ainda?</p>
+          <router-link to="/sign-up" class="sign-up-link"
+            >Clique aqui</router-link
+          >
+        </div>
+      </v-card>
+    </div>
+
+    <v-snackbar
+      v-model="notificationStore.showSnackbar"
+      :color="notificationStore.color"
+      :timeout="3000"
+    >
+      {{ notificationStore.message }}
+    </v-snackbar>
   </div>
-
-  <v-snackbar
-    v-model="notificationStore.showSnackbar"
-    :color="notificationStore.color"
-    :timeout="3000"
-  >
-    {{ notificationStore.message }}
-  </v-snackbar>
 </template>
 
 <script lang="ts">
@@ -86,6 +88,9 @@ export default {
         router.push("/");
         notificationStore.showNotification("Logado com sucesso!", "success");
       } catch (error) {
+        console.log(error);
+        console.log("entrou error handle login");
+
         notificationStore.showNotification(
           "Falha ao tentar se logar!",
           "error"

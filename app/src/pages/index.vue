@@ -1,83 +1,86 @@
 <template>
-  <TitlePage title="Consulta de Alunos" />
+  <div>
+    <TitlePage title="Consulta de Alunos" />
 
-  <div class="container mt-5">
-    <div class="box-search ml-5">
-      <v-text-field
-        v-model="searchQuery"
-        label="Digite sua Busca"
-        class="input-search"
-        clearable
-        max-width="70%"
-        outlined
-        dense
-        density="compact"
-      />
-      <v-btn @click="searchStudents"> Pesquisar </v-btn>
+    <div class="container mt-5">
+      <div class="box-search ml-5">
+        <v-text-field
+          v-model="searchQuery"
+          label="Digite sua Busca"
+          class="input-search"
+          clearable
+          max-width="70%"
+          outlined
+          dense
+          density="compact"
+        />
+        <v-btn @click="searchStudents"> Pesquisar </v-btn>
+      </div>
+      <v-btn class="mr-5" @click="navigateManageStudents" :disabled="!isAdmin">
+        Cadastrar Aluno
+      </v-btn>
     </div>
-    <v-btn class="mr-5" @click="navigateManageStudents" :disabled="!isAdmin">
-      Cadastrar Aluno
-    </v-btn>
+
+    <v-data-table-server
+      class="custom-table elevation-5 mt-5"
+      :headers="studentsStore.headers"
+      :items="studentsStore.paginatedItems"
+      :items-length="studentsStore.filteredItems.length"
+      :items-per-page="studentsStore.itemsPerPage"
+      :server-items-length="studentsStore.filteredItems.length"
+      :items-per-page-options="[
+        { value: 5, title: '5' },
+        { value: 10, title: '10' },
+        { value: 20, title: '20' },
+        { value: 50, title: '50' },
+        { value: 100, title: '100' },
+        { value: -1, title: 'Todos' }
+      ]"
+      :loading="studentsStore.loading"
+      :page="studentsStore.page"
+      @update:page="studentsStore.updatePage"
+      @update:items-per-page="
+        studentsStore.itemsPerPage = $event;
+        studentsStore.updatePagination();
+      "
+    >
+      <template v-slot:[`item.menu`]="{ item }">
+        <v-menu>
+          <template #activator="{ props }">
+            <v-btn
+              v-bind="props"
+              color="primary"
+              icon="mdi-dots-vertical"
+              variant="text"
+              :disabled="!isAdmin"
+            ></v-btn>
+          </template>
+          <v-list>
+            <v-list-item value="1" @click="editStudent(item)">
+              <v-list-item-title>Editar</v-list-item-title>
+            </v-list-item>
+            <v-list-item value="1" @click="toggleDialogDelete(item.id)">
+              <v-list-item-title>Excluir</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </template>
+    </v-data-table-server>
+
+    <DialogDeleteStudent
+      :dialog="showDialogDelete"
+      :studentId="selectedStudentId"
+      @update:dialog="toggleDialogDelete"
+    />
+
+    <v-snackbar
+      v-model="notificationStore.showSnackbar"
+      :color="notificationStore.color"
+      :timeout="3000"
+    >
+      {{ notificationStore.message }}
+    </v-snackbar>
   </div>
-
-  <v-data-table-server
-    class="custom-table elevation-5 mt-5"
-    :headers="studentsStore.headers"
-    :items="studentsStore.paginatedItems"
-    :items-length="studentsStore.filteredItems.length"
-    :items-per-page="studentsStore.itemsPerPage"
-    :server-items-length="studentsStore.filteredItems.length"
-    :items-per-page-options="[
-      { value: 5, title: '5' },
-      { value: 10, title: '10' },
-      { value: 20, title: '20' },
-      { value: 50, title: '50' },
-      { value: 100, title: '100' },
-      { value: -1, title: 'Todos' }
-    ]"
-    :loading="studentsStore.loading"
-    :page="studentsStore.page"
-    @update:page="studentsStore.updatePage"
-    @update:items-per-page="
-      studentsStore.itemsPerPage = $event;
-      studentsStore.updatePagination();
-    "
-  >
-    <template v-slot:[`item.menu`]="{ item }">
-      <v-menu>
-        <template #activator="{ props }">
-          <v-btn
-            v-bind="props"
-            color="primary"
-            icon="mdi-dots-vertical"
-            variant="text"
-            :disabled="!isAdmin"
-          ></v-btn>
-        </template>
-        <v-list>
-          <v-list-item value="1" @click="editStudent(item)">
-            <v-list-item-title>Editar</v-list-item-title>
-          </v-list-item>
-          <v-list-item value="1" @click="toggleDialogDelete(item.id)">
-            <v-list-item-title>Excluir</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-    </template>
-  </v-data-table-server>
-
-  <DialogDeleteStudent
-    :dialog="showDialogDelete"
-    :studentId="selectedStudentId"
-    @update:dialog="toggleDialogDelete"
-  />
-  <v-snackbar
-    v-model="notificationStore.showSnackbar"
-    :color="notificationStore.color"
-    :timeout="3000"
-  >
-    {{ notificationStore.message }}
-  </v-snackbar>
 </template>
 
 <script lang="ts">

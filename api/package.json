@@ -5,7 +5,7 @@
     "scripts": {
         "prebuild": "rm -rf dist",
         "build": "tsc -p tsconfig.build.json",
-        "start": "npm run deploy:generate:run && npm run deploy:seed:run &&  node dist/server.js",
+        "start": "npm run deploy:migration:run &&  node dist/server.js",
         "dev": "nodemon --watch 'src/' --exec 'ts-node -r tsconfig-paths/register ./src/server.ts' -e ts",
         "dev:load-envs": "dotenv -e .env.development",
         "dev:migration:run": "npm run dev:load-envs prisma migrate deploy",
@@ -21,7 +21,7 @@
         "test:load-envs": "dotenv -e .env.test",
         "test:seed": "npm run test:load-envs prisma db seed",
         "prisma:migration:test": "dotenv -e .env.test prisma migrate dev && dotenv -e .env.test prisma db seed",
-        "deploy:migration:run": "dotenv -e .env prisma migrate dev --create-only",
+        "deploy:migration:run": "dotenv -e .env prisma migrate dev && dotenv -e .env prisma db seed",
         "deploy:load-envs": "dotenv -e .env",
         "deploy:seed:run": "npm run deploy:load-envs prisma db seed"
     },

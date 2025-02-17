@@ -1,6 +1,5 @@
-import { Users } from "@prisma/client";
 import Joi from "joi";
-import { CreateUserReqType, SignInUserReqType } from "protocols/userTypes";
+import { CreateUserReqType, SignInUserReqType } from "../protocols/userTypes";
 
 export const createUserSchema = Joi.object<CreateUserReqType>({
     name: Joi.string().required(),

@@ -1,10 +1,10 @@
 import { RolesNames, Users } from "@prisma/client";
-import { conflictError, invalidCredentialsError } from "errors";
+import { conflictError, invalidCredentialsError } from "../errors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { userRepository } from "repositories";
-import { notFoundError } from "errors/notFoundError";
-import { CreateUserReqType, SignInUserReqType, SignInUserResType } from "protocols/userTypes";
+import { userRepository } from "../repositories";
+import { notFoundError } from "../errors/notFoundError";
+import { CreateUserReqType, SignInUserReqType, SignInUserResType } from "../protocols/userTypes";
 
 export async function createUserService(user: CreateUserReqType): Promise<void> {
     const { name, email, password, role } = user;
